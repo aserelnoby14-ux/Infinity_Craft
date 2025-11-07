@@ -8,143 +8,122 @@
     * {
       box-sizing: border-box;
     }
+
     body {
-      font-family: sans-serif;
       margin: 0;
+      font-family: sans-serif;
       text-align: center;
       direction: rtl;
-      color: white;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    .parallax {
-      background-image: url("https://i.ibb.co/XkZmDC5D/IMG-20251107-122802-836.jpg");
-      min-height: 100vh;
-      background-attachment: fixed;
-      background-position: center;
-      background-repeat: no-repeat;
+      background-image: url('https://i.ibb.co/XkZmDC5D/background.jpg');
       background-size: cover;
-      filter: brightness(0.9);
-      position: relative;
+      background-attachment: fixed;
+      color: white;
     }
 
     header {
-      background: rgba(233, 30, 99, 0.9);
-      color: white;
-      padding: 20px 10px 10px;
-      font-size: 1.5em;
-      border-bottom: 2px solid white;
-      position: relative;
-    }
-
-    .telegram-link {
-      margin-top: 8px;
-      font-size: 0.9em;
-      background: rgba(0, 0, 0, 0.4);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 15px;
-      border-radius: 10px;
-    }
-
-    .telegram-link img {
-      width: 18px;
-      height: 18px;
-    }
-
-    .telegram-link a {
-      color: #00e5ff;
-      text-decoration: none;
+      background-color: red;
+      padding: 15px;
+      font-size: 22px;
       font-weight: bold;
-      direction: ltr;
     }
 
-    .telegram-link a:hover {
-      text-decoration: underline;
-    }
-
-    .content {
+    .container {
       padding: 20px;
     }
 
-    .box {
-      background: #4caf50;
-      width: 250px;
-      height: 250px;
+    .mod-box {
+      background-color: #2e7d32;
+      border-radius: 20px;
+      padding: 15px;
+      width: 300px;
       margin: 20px auto;
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
 
-    .box img {
+    .mod-box img {
       width: 100%;
-      height: 100%;
+      height: 180px;
+      border-radius: 10px;
       object-fit: cover;
     }
 
-    .info {
-      margin-top: 15px;
-      font-size: 1em;
-      text-shadow: 1px 1px 3px #000;
-    }
-
-    .link {
-      margin-top: 25px;
-    }
-
-    .download-btn {
-      display: inline-block;
-      background: #e91e63;
+    .mod-box h2 {
       color: white;
-      padding: 12px 25px;
-      border-radius: 10px;
+      font-size: 20px;
+      margin-top: 10px;
+    }
+
+    .mod-box p {
+      color: white;
+      font-size: 14px;
+      margin: 10px 0;
+    }
+
+    .download-button {
+      display: inline-block;
+      background-color: red;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 8px;
       text-decoration: none;
-      font-weight: bold;
+      font-size: 15px;
       transition: 0.3s;
     }
 
-    .download-btn:hover {
-      background: #c2185b;
+    .download-button:hover {
+      background-color: #ff6666;
     }
+
+    .telegram {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 8px 12px;
+      border-radius: 10px;
+    }
+
+    .telegram img {
+      width: 20px;
+      vertical-align: middle;
+      margin-left: 5px;
+    }
+
   </style>
 </head>
 <body>
-  <div class="parallax">
-    <header>
-      مرحبا بكم في موقع مودات Infinity_Craft
-      <div class="telegram-link">
-        <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram">
-        <span>رابط قناة التليجرام:</span>
-        <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">t.me/+qq_iB3QRLpJjMGFk</a>
-      </div>
-    </header>
 
-    <div class="content">
-      <div class="box">
-        <img src="https://i.ibb.co/fdc1M4Ww/Advanced-Waypoints.jpg" alt="صورة المود">
-      </div>
+  <header>🌟 مرحباً بكم في موقع مودات Infinity_Craft 🌟</header>
 
-      <div class="info">
-        <p>المود يساعد إذا ضيعت بيتك وتقدر تنتقله شبه الجافا.</p>
-      </div>
-
-      <div class="link">
-        <a class="download-btn" href="https://limewire.com/d/EZ5aL#nucSjLt5oH" target="_blank">⬇️ تحميل المود</a>
-      </div>
-    </div>
+  <div class="telegram">
+    رابط قناة التليجرام:
+    <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank" style="color: #00aced; text-decoration: none;">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram">
+      قناة Infinity_Craft
+    </a>
   </div>
+
+  <div class="container">
+
+    <!-- المود الأول -->
+    <div class="mod-box">
+      <img src="https://i.ibb.co/fdc1M4Ww/waypoints.jpg" alt="Way Point Mod">
+      <h2>🔮 مود Way Point</h2>
+      <p>المود يساعد إذا ضيعت بيتك وتقدر تنتقله شبه الجافا.</p>
+      <a href="https://limewire.com/d/EZ5aL#nucSjLt5oH" target="_blank" class="download-button">⬇️ تحميل المود</a>
+    </div>
+
+    <!-- المود الثاني -->
+    <div class="mod-box">
+      <img src="https://i.ibb.co/PvztpD5F/0.jpg" alt="Replay Craft Mod">
+      <h2>🎥 مود Replay Craft</h2>
+      <p>لو انت من صناع المحتوي فاكيد انت محتاج مود الريبلاي 🎥</p>
+      <a href="https://www.mediafire.com/file/pkus0qa44rpiwg9/0.mcaddon/file" target="_blank" class="download-button">⬇️ تحميل المود</a>
+    </div>
+
+  </div>
+
 </body>
-  </html>
-<!-- بداية المود الجديد Replay Craft -->
-<div class="mod-box">
-  <img src="https://i.ibb.co/PvztpD5F/0.jpg" alt="Replay Craft" class="mod-image">
-  <h2 class="mod-title">🎥 مود Replay Craft 🎥</h2>
-  <p class="mod-description">لو انت من صناع المحتوي فاكيد انت محتاج مود الريبلاي 🎥</p>
-  <a href="https://www.mediafire.com/file/pkus0qa44rpiwg9/0.mcaddon/file" target="_blank" class="download-button">⬇️ تحميل المود</a>
-</div>
-<!-- نهاية المود الجديد -->
+</html>
