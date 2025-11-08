@@ -3,122 +3,160 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infinity Craft Mods</title>
+  <title>Infinity Craft - نشر و تحميل المودات</title>
   <style>
     body {
-      font-family: "Cairo", sans-serif;
-      background: white;
-      text-align: center;
+      font-family: 'Cairo', sans-serif;
+      background-color: #fff;
       margin: 0;
       padding: 0;
+      text-align: center;
+      direction: rtl;
     }
     header {
-      background: red;
+      background-color: #c0392b;
       color: white;
       padding: 15px;
-      font-size: 24px;
+      font-size: 22px;
+      font-weight: bold;
     }
     .mod-box {
-      border: 2px solid #4CAF50;
-      border-radius: 12px;
-      padding: 10px;
-      margin: 20px auto;
-      width: 90%;
-      background-color: #f9f9f9;
+      background-color: #2ecc71;
+      margin: 15px;
+      padding: 15px;
+      border-radius: 15px;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    img {
-      width: 100%;
+    .upload-section {
+      margin: 20px auto;
+      background-color: #f2f2f2;
+      padding: 20px;
       border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+    }
+    input, textarea {
+      width: 90%;
+      margin: 8px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
     button {
-      background-color: #4CAF50;
+      background-color: #27ae60;
       color: white;
       border: none;
       padding: 10px 20px;
-      margin-top: 10px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
     }
-    .telegram {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 14px;
-      color: blue;
+    button:hover {
+      background-color: #219150;
+    }
+    a.download {
+      display: inline-block;
+      background-color: #16a085;
+      padding: 8px 15px;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-top: 10px;
     }
   </style>
-</head>
-<body>
-  <header>مرحباً بكم في موقع مودات Infinity Craft</header>
 
-  <div class="telegram">
-    <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">قناة التليجرام</a>
-  </div>
-
-  <h2>🧱 المودات</h2>
-  <div id="mods"></div>
-
-  <h3>✨ أضف مود جديد</h3>
-  <input id="modName" placeholder="اسم المود"><br>
-  <textarea id="modDesc" placeholder="وصف المود"></textarea><br>
-  <input id="modImage" placeholder="رابط الصورة"><br>
-  <input id="modLink" placeholder="رابط التحميل"><br>
-  <button onclick="addMod()">نشر المود</button>
-
+  <!-- Firebase SDK -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy } 
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // ⚠️ حط هنا بيانات Firebase بتاعتك
+    // 🧩 إعداد Firebase - استبدل البيانات اللي بين القوسين باللي من موقعك
     const firebaseConfig = {
-      apiKey: "xxxxxxxxxxxxxxxxxxxx",
-      authDomain: "xxxxxxxxxxxxxxxxxxxx",
-      projectId: "xxxxxxxxxxxxxxxxxxxx",
-      storageBucket: "xxxxxxxxxxxxxxxxxxxx",
-      messagingSenderId: "xxxxxxxxxxxxxxxxxxxx",
-      appId: "xxxxxxxxxxxxxxxxxxxx"
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    async function loadMods() {
-      const modsDiv = document.getElementById("mods");
-      modsDiv.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "mods"));
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        modsDiv.innerHTML += `
-          <div class="mod-box">
-            <h3>${data.name}</h3>
-            <img src="${data.image}" alt="${data.name}">
-            <p>${data.desc}</p>
-            <a href="${data.link}" target="_blank">
-              <button>رابط التحميل</button>
-            </a>
-          </div>
-        `;
-      });
-    }
-
-    async function addMod() {
-      const name = document.getElementById("modName").value;
-      const desc = document.getElementById("modDesc").value;
-      const image = document.getElementById("modImage").value;
-      const link = document.getElementById("modLink").value;
+    // 🧠 دالة النشر
+    async function uploadMod() {
+      const name = document.getElementById("modName").value.trim();
+      const desc = document.getElementById("modDesc").value.trim();
+      const image = document.getElementById("modImage").value.trim();
+      const link = document.getElementById("modLink").value.trim();
 
       if (!name || !desc || !image || !link) {
         alert("❌ من فضلك املأ كل الخانات!");
         return;
       }
 
-      await addDoc(collection(db, "mods"), { name, desc, image, link });
-      alert("✅ تم نشر المود بنجاح!");
-      loadMods();
+      try {
+        await addDoc(collection(db, "mods"), {
+          name, desc, image, link,
+          createdAt: serverTimestamp()
+        });
+        alert("✅ تم نشر المود بنجاح!");
+        document.getElementById("modName").value = "";
+        document.getElementById("modDesc").value = "";
+        document.getElementById("modImage").value = "";
+        document.getElementById("modLink").value = "";
+        loadMods(); // إعادة تحميل المودات فورًا
+      } catch (e) {
+        alert("❌ حصل خطأ أثناء النشر!");
+        console.error(e);
+      }
     }
 
-    loadMods();
+    // 🧠 دالة عرض المودات
+    async function loadMods() {
+      const container = document.getElementById("modsContainer");
+      container.innerHTML = "⏳ جاري تحميل المودات...";
+      const q = query(collection(db, "mods"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+      container.innerHTML = "";
+      snapshot.forEach((doc) => {
+        const mod = doc.data();
+        const box = document.createElement("div");
+        box.className = "mod-box";
+        box.innerHTML = `
+          <h2>${mod.name}</h2>
+          <img src="${mod.image}" width="100%" style="border-radius:10px;">
+          <p>${mod.desc}</p>
+          <a href="${mod.link}" target="_blank" class="download">🔗 تحميل المود</a>
+        `;
+        container.appendChild(box);
+      });
+      if (snapshot.empty) container.innerHTML = "🚫 لا يوجد مودات حالياً.";
+    }
+
+    window.uploadMod = uploadMod;
+    window.onload = loadMods;
   </script>
+</head>
+<body>
+  <header>🌍 Infinity Craft - مودات ماين كرافت</header>
+
+  <div class="upload-section">
+    <h3>📤 نشر مود جديد</h3>
+    <input id="modName" placeholder="اسم المود">
+    <textarea id="modDesc" placeholder="وصف المود"></textarea>
+    <input id="modImage" placeholder="رابط صورة المود (من imgbb مثلاً)">
+    <input id="modLink" placeholder="رابط تحميل المود">
+    <button onclick="uploadMod()">نشر المود 🚀</button>
+  </div>
+
+  <div id="modsContainer"></div>
+
+  <footer style="margin:30px 0;color:#555;">
+    📢 تابعنا على تليجرام:
+    <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">Infinity Craft</a>
+  </footer>
 </body>
 </html>
