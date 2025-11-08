@@ -1,175 +1,435 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>مودات Infinity_Craft</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      text-align: center;
-      direction: rtl;
-      background-image: url('https://i.ibb.co/XkZmDC5D/background.jpg');
-      background-size: cover;
-      background-attachment: fixed;
-      color: white;
-    }
-
-    header {
-      background-color: red;
-      padding: 15px;
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .container {
-      padding: 20px;
-    }
-
-    .mod-box {
-      background-color: #2e7d32;
-      border-radius: 20px;
-      padding: 15px;
-      width: 300px;
-      margin: 20px auto;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    }
-
-    .mod-box img {
-      width: 100%;
-      height: 180px;
-      border-radius: 10px;
-      object-fit: cover;
-    }
-
-    .mod-box h2 {
-      color: white;
-      font-size: 20px;
-      margin-top: 10px;
-    }
-
-    .mod-box p {
-      color: white;
-      font-size: 14px;
-      margin: 10px 0;
-    }
-
-    .download-button {
-      display: inline-block;
-      background-color: red;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 15px;
-      transition: 0.3s;
-    }
-
-    .download-button:hover {
-      background-color: #ff6666;
-    }
-
-    .telegram {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      font-size: 14px;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 8px 12px;
-      border-radius: 10px;
-    }
-
-    .telegram img {
-      width: 20px;
-      vertical-align: middle;
-      margin-left: 5px;
-    }
-
-  </style>
-</head>
-<body>
-
-  <header>🌟 مرحباً بكم في موقع مودات Infinity_Craft 🌟</header>
-
-  <div class="telegram">
-    رابط قناة التليجرام:
-    <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank" style="color: #00aced; text-decoration: none;">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram">
-      قناة Infinity_Craft
-    </a>
-  </div>
-
-  <div class="container">
-
-    <!-- المود الأول -->
-    <div class="mod-box">
-      <img src="https://i.ibb.co/fdc1M4Ww/waypoints.jpg" alt="Way Point Mod">
-      <h2>🔮 مود Way Point</h2>
-      <p>المود يساعد إذا ضيعت بيتك وتقدر تنتقله شبه الجافا.</p>
-      <a href="https://limewire.com/d/EZ5aL#nucSjLt5oH" target="_blank" class="download-button">⬇️ تحميل المود</a>
-    </div>
-
-    <!-- المود الثاني -->
-    <div class="mod-box">
-      <img src="https://i.ibb.co/PvztpD5F/0.jpg" alt="Replay Craft Mod">
-      <h2>🎥 مود Replay Craft</h2>
-      <p>لو انت من صناع المحتوي فاكيد انت محتاج مود الريبلاي 🎥</p>
-      <a href="https://www.mediafire.com/file/pkus0qa44rpiwg9/0.mcaddon/file" target="_blank" class="download-button">⬇️ تحميل المود</a>
-    </div>
-
-  </div>
-
-</body>
-</html>
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>نشر مود جديد - Infinity Craft</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Infinity_Craft - مودات</title>
+
+  <!-- CSS بسيط حسب طلبك: خلفية بيضا، هيدر أحمر، مربع أخضر للصورة -->
   <style>
-    body{font-family:sans-serif;background:#ffffff;color:#111;padding:20px;text-align:center}
-    .card{max-width:520px;margin:30px auto;background:rgba(88,24,69,0.07);border-radius:12px;padding:20px}
-    h1{color:#581845}
-    input,textarea{width:90%;padding:10px;margin:8px 0;border-radius:8px;border:1px solid #ddd}
-    button{background:#8A2BE2;color:#fff;padding:12px 18px;border:none;border-radius:10px;font-size:16px}
+    :root{
+      --red:#E53935;
+      --green:#4CAF50;
+      --white:#ffffff;
+      --muted:#666;
+      --card-bg:#f9f9f9;
+    }
+    body{
+      margin:0;
+      font-family: Arial, "Noto Naskh Arabic", sans-serif;
+      background:var(--white);
+      color:#111;
+    }
+    header{
+      background:var(--red);
+      color: #fff;
+      padding:18px 16px;
+      text-align:center;
+      font-size:20px;
+      font-weight:700;
+    }
+    .container{
+      max-width:1000px;
+      margin:18px auto;
+      padding:0 12px 60px;
+    }
+    .top-actions{
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:center;
+      margin:14px 0;
+    }
+    .btn{
+      background:var(--green);
+      color:#fff;
+      border:none;
+      padding:10px 14px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    .btn.secondary{
+      background:transparent;
+      border:2px solid var(--red);
+      color:var(--red);
+    }
+    /* Grid for mods */
+    .mods-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+      gap:16px;
+      margin-top:12px;
+    }
+    .mod-card{
+      background:var(--card-bg);
+      border-radius:12px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.06);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    .mod-image{
+      background:var(--green);
+      height:180px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .mod-image img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+    .mod-body{
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .mod-title{
+      font-size:18px;
+      font-weight:800;
+    }
+    .mod-desc{
+      font-size:13px;
+      color:var(--muted);
+      min-height:36px;
+    }
+    .mod-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-start;
+      align-items:center;
+      margin-top:6px;
+    }
+    .download-btn{
+      background:var(--red);
+      color:#fff;
+      border:none;
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:700;
+      text-decoration:none;
+    }
+
+    /* Upload modal (simple) */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.5);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:999;
+    }
+    .modal{
+      width:min(720px, 96%);
+      background:#fff;
+      border-radius:12px;
+      padding:16px;
+      direction:rtl;
+    }
+    .form-row{ display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+    .form-row input[type="text"], .form-row textarea, .form-row input[type="url"]{
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #ddd;
+      font-size:14px;
+    }
+    .file-preview{
+      width:100%;
+      height:200px;
+      background:#f0f0f0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:8px;
+      overflow:hidden;
+    }
+    footer{
+      text-align:center;
+      margin-top:18px;
+      padding:18px 8px;
+      color:#444;
+      font-size:14px;
+    }
+    a.telegram{
+      color:var(--red);
+      text-decoration:none;
+      font-weight:700;
+    }
+
+    /* responsive */
+    @media (max-width:560px){
+      .top-actions{flex-direction:column; align-items:stretch}
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>نشر مود جديد</h1>
-    <form id="uploadForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" enctype="multipart/form-data">
-      <input type="text" name="mod_name" placeholder="اسم المود" required><br>
-      <textarea name="description" rows="4" placeholder="وصف المود" required></textarea><br>
-      <input type="file" name="mod_file" accept=".mcaddon,.mcpack,.zip" required><br>
-      <input type="email" name="email" placeholder="بريدك للتواصل (اختياري)" value="aserelnoby14@gmail.com"><br>
-      <button type="submit">إرسال المود</button>
-    </form>
-    <p style="font-size:13px;color:#666;margin-top:12px">بعد الإرسال هيوصل لك إيميل به بيانات المود والملف حسب إعدادات الفورم.</p>
+
+  <header>Infinity_Craft - مودات الموبايل</header>
+
+  <div class="container">
+    <div class="top-actions">
+      <div>
+        <button id="openUpload" class="btn">انشر مودك</button>
+        <button id="refresh" class="btn secondary">تحديث</button>
+      </div>
+      <div style="font-size:14px;color:#333">
+        مرحباً بكم في موقع مودات <strong>Infinity_Craft</strong>
+      </div>
+    </div>
+
+    <!-- قائمة المودات -->
+    <div id="modsGrid" class="mods-grid">
+      <!-- البطاقات هتتعمر ديناميكياً -->
+    </div>
+
+    <div id="emptyState" style="text-align:center;color:#777;margin-top:30px;display:none;">
+      لا يوجد مودات حتى الآن — كن أول من ينشر!
+    </div>
+
+    <footer>
+      رابط قناة التليجرام: 
+      <a class="telegram" href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">https://t.me/+qq_iB3QRLpJjMGFk</a>
+    </footer>
   </div>
 
+  <!-- نافذة الرفع -->
+  <div id="uploadOverlay" class="overlay" style="display:none;">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3 style="margin:0 0 10px 0">انشر مودك</h3>
+
+      <div class="form-row">
+        <input id="modName" type="text" placeholder="اسم المود" />
+      </div>
+      <div class="form-row">
+        <textarea id="modDesc" rows="3" placeholder="وصف المود"></textarea>
+      </div>
+
+      <div class="form-row">
+        <input id="modLink" type="url" placeholder="رابط التحميل (مثال: رابط ميديافاير)" />
+      </div>
+
+      <div class="form-row">
+        <label style="display:block;width:100%;cursor:pointer;">
+          <div style="padding:10px;border-radius:8px;border:1px dashed #ddd;text-align:center;">
+            اختر صورة للمود (ستعرض هنا)
+            <input id="modImageInput" type="file" accept="image/*" style="display:none" />
+          </div>
+        </label>
+      </div>
+
+      <div class="form-row">
+        <div class="file-preview" id="filePreview">لا يوجد صورة</div>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
+        <button id="cancelUpload" class="btn secondary">إلغاء</button>
+        <button id="sendUpload" class="btn">نشر المود</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+
   <script>
-    // لو عايز تعامل الاستجابة داخل الصفحة بدل تحويل:
-    const form = document.getElementById('uploadForm');
-    form.addEventListener('submit', function(e){
-      // هنا التحميل هيتم بالطريقة العادية (POST). لو عايز AJAX لازم endpoint يدعم CORS.
+    /*******************************************
+     * 1) ضَع هنا إعدادات Firebase (حط config لمشروعك)
+     *   -> روح Firebase console > Project settings > SDK setup > config
+     *******************************************/
+    const firebaseConfig = {
+      apiKey: "PUT_YOUR_apiKey_HERE",
+      authDomain: "PUT_YOUR_authDomain_HERE",
+      databaseURL: "PUT_YOUR_databaseURL_HERE",
+      projectId: "PUT_YOUR_projectId_HERE",
+      storageBucket: "PUT_YOUR_storageBucket_HERE",
+      messagingSenderId: "PUT_YOUR_messagingSenderId_HERE",
+      appId: "PUT_YOUR_appId_HERE"
+    };
+
+    // init
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const storage = firebase.storage();
+
+    // عناصر واجهة
+    const modsGrid = document.getElementById('modsGrid');
+    const emptyState = document.getElementById('emptyState');
+    const openUpload = document.getElementById('openUpload');
+    const uploadOverlay = document.getElementById('uploadOverlay');
+    const cancelUpload = document.getElementById('cancelUpload');
+    const sendUpload = document.getElementById('sendUpload');
+    const modImageInput = document.getElementById('modImageInput');
+    const filePreview = document.getElementById('filePreview');
+    const refreshBtn = document.getElementById('refresh');
+
+    // form fields
+    const modNameField = document.getElementById('modName');
+    const modDescField = document.getElementById('modDesc');
+    const modLinkField = document.getElementById('modLink');
+
+    let selectedImageFile = null;
+
+    // فتح/اغلاق الفورم
+    openUpload.addEventListener('click', ()=> {
+      uploadOverlay.style.display = 'flex';
     });
+    cancelUpload.addEventListener('click', ()=> {
+      uploadOverlay.style.display = 'none';
+      clearForm();
+    });
+
+    // اختيار صورة وعرض بريڤيو
+    modImageInput.addEventListener('change', (e)=>{
+      const f = e.target.files[0];
+      if(!f) return;
+      selectedImageFile = f;
+      const reader = new FileReader();
+      reader.onload = function(ev){
+        filePreview.innerHTML = '<img src="'+ev.target.result+'" style="width:100%;height:100%;object-fit:cover;" />';
+      };
+      reader.readAsDataURL(f);
+    });
+
+    // لو حد ضغط في المنطقة نفتح اختيار الملف
+    filePreview.addEventListener('click', ()=> modImageInput.click());
+
+    // إرسال المود
+    sendUpload.addEventListener('click', async ()=> {
+      const name = modNameField.value.trim();
+      const desc = modDescField.value.trim();
+      const link = modLinkField.value.trim();
+
+      if(!name || !desc || !link){
+        alert('من فضلك املأ الاسم والوصف والرابط');
+        return;
+      }
+
+      // نرفع الصورة أولاً إلى Storage (لو محدد)
+      let imageUrl = '';
+      try{
+        if(selectedImageFile){
+          const storageRef = storage.ref().child('mods_images/' + Date.now() + '_' + selectedImageFile.name);
+          const snapshot = await storageRef.put(selectedImageFile);
+          imageUrl = await snapshot.ref.getDownloadURL();
+        }
+
+        // ادخل بيانات المود في Realtime Database
+        const newRef = db.ref('mods').push();
+        await newRef.set({
+          name: name,
+          desc: desc,
+          image: imageUrl,
+          link: link,
+          timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+
+        alert('تم نشر المود بنجاح ✅');
+        uploadOverlay.style.display = 'none';
+        clearForm();
+      }catch(err){
+        console.error(err);
+        alert('حدث خطأ أثناء الرفع: ' + (err.message || err));
+      }
+    });
+
+    function clearForm(){
+      modNameField.value = '';
+      modDescField.value = '';
+      modLinkField.value = '';
+      modImageInput.value = '';
+      selectedImageFile = null;
+      filePreview.innerHTML = 'لا يوجد صورة';
+    }
+
+    // دالة لإنشاء بطاقة مود في DOM
+    function createModCard(modData){
+      const div = document.createElement('div');
+      div.className = 'mod-card';
+
+      const imgDiv = document.createElement('div');
+      imgDiv.className = 'mod-image';
+      if(modData.image){
+        imgDiv.innerHTML = '<img src="'+modData.image+'" alt="'+escapeHtml(modData.name)+'" />';
+      }else{
+        imgDiv.innerHTML = '<div style="padding:12px;color:#fff;font-weight:700">لا صورة</div>';
+      }
+
+      const body = document.createElement('div');
+      body.className = 'mod-body';
+
+      const title = document.createElement('div');
+      title.className = 'mod-title';
+      title.textContent = modData.name || 'بدون اسم';
+
+      const desc = document.createElement('div');
+      desc.className = 'mod-desc';
+      desc.textContent = modData.desc || '';
+
+      const actions = document.createElement('div');
+      actions.className = 'mod-actions';
+
+      const download = document.createElement('a');
+      download.className = 'download-btn';
+      download.textContent = 'تحميل المود';
+      download.href = modData.link || '#';
+      download.target = '_blank';
+      actions.appendChild(download);
+
+      body.appendChild(title);
+      body.appendChild(desc);
+      body.appendChild(actions);
+
+      div.appendChild(imgDiv);
+      div.appendChild(body);
+
+      return div;
+    }
+
+    // تحميل وعرض المودات من Firebase (Realtime)
+    function listenForMods(){
+      const ref = db.ref('mods').orderByChild('timestamp');
+      ref.on('value', snapshot => {
+        modsGrid.innerHTML = '';
+        const val = snapshot.val();
+        if(!val){
+          emptyState.style.display = 'block';
+          return;
+        }
+        emptyState.style.display = 'none';
+        // نعاكس الترتيب عشان الأحدث يظهر أول
+        const items = Object.keys(val).map(k => ({key:k, ...val[k]})).sort((a,b)=>b.timestamp - a.timestamp);
+        for(const item of items){
+          const card = createModCard(item);
+          modsGrid.appendChild(card);
+        }
+      });
+    }
+
+    // زر التحديث اليدوي
+    refreshBtn.addEventListener('click', ()=> {
+      // إعادة تحميل البيانات من Firebase مباشرة (on value already مفعّل)
+      // فقط لإعطاء رد فعل سريع:
+      alert('يتم تحديث القائمة (آلياً تظهر التغييرات من Firebase)');
+    });
+
+    // ترميز بسيط لمنع XSS في النصوص
+    function escapeHtml(str){
+      if(!str) return '';
+      return str.replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]); });
+    }
+
+    // شغّل listener
+    listenForMods();
+
   </script>
 </body>
 </html>
-<div class="mod-card">
-  <div class="mod-image">
-    <img src="https://i.ibb.co/Ngfsmmzj/your-image.jpg" alt="اليد الثانية">
-  </div>
-  <div class="mod-info">
-    <h2>اليد الثانية</h2>
-    <p>يسمحلك تحط بعض الأشياء في إيدك الثانية عن طريق ال Double Shift 🎮</p>
-    <a href="https://www.mediafire.com/file/ccoxwnjlt80iloj/Raiyons_OffHandV1.4.mcaddon/file" class="download-button">تحميل المود</a>
-  </div>
-</div>
