@@ -1,153 +1,124 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Infinity Craft - تحميل المودات</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinity Craft Mods</title>
   <style>
     body {
+      font-family: "Cairo", sans-serif;
       background: white;
-      font-family: 'Cairo', sans-serif;
-      direction: rtl;
+      text-align: center;
       margin: 0;
       padding: 0;
-      text-align: center;
     }
     header {
       background: red;
       color: white;
       padding: 15px;
-      font-size: 22px;
-      font-weight: bold;
+      font-size: 24px;
     }
     .mod-box {
       border: 2px solid #4CAF50;
-      border-radius: 15px;
+      border-radius: 12px;
       padding: 10px;
-      margin: 15px auto;
-      max-width: 400px;
-      text-align: center;
-      background: #f9f9f9;
-      box-shadow: 0px 0px 10px #ccc;
+      margin: 20px auto;
+      width: 90%;
+      background-color: #f9f9f9;
     }
-    .mod-box img {
+    img {
       width: 100%;
       border-radius: 10px;
     }
-    .upload-section {
-      background: #f1f1f1;
-      border-radius: 15px;
-      padding: 15px;
-      margin: 20px;
-    }
-    input, textarea {
-      width: 90%;
-      margin: 8px 0;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
     button {
-      background: #4CAF50;
+      background-color: #4CAF50;
       color: white;
       border: none;
       padding: 10px 20px;
+      margin-top: 10px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
     }
-    button:hover {
-      background: #45a049;
+    .telegram {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 14px;
+      color: blue;
     }
   </style>
 </head>
 <body>
+  <header>مرحباً بكم في موقع مودات Infinity Craft</header>
 
-  <header>Infinity Craft - تحميل المودات</header>
-
-  <!-- قسم نشر المود -->
-  <div class="upload-section">
-    <h2>🔧 نشر مود جديد</h2>
-    <input type="text" id="modName" placeholder="اسم المود"><br>
-    <textarea id="modDesc" placeholder="وصف المود"></textarea><br>
-    <input type="text" id="modImg" placeholder="رابط صورة المود (من موقع رفع الصور)"><br>
-    <input type="text" id="modLink" placeholder="رابط التحميل (من ميديافاير مثلًا)"><br>
-    <button id="addModBtn">✅ نشر المود</button>
+  <div class="telegram">
+    <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">قناة التليجرام</a>
   </div>
 
-  <!-- هنا هتظهر المودات -->
-  <div id="modsContainer"></div>
+  <h2>🧱 المودات</h2>
+  <div id="mods"></div>
 
-  <script>
-    // مودين جاهزين (بتوع الصبح)
-    const mods = [
-      {
-        name: "مود اليد الثانية",
-        desc: "يسمح لك بوضع أدوات في اليد الثانية بالضغط مرتين على Shift.",
-        img: "https://i.ibb.co/Ngfsmmzj/secondhand.png",
-        link: "https://www.mediafire.com/file/ccoxwnjlt80iloj/Raiyons_OffHandV1.4.mcaddon/file"
-      },
-      {
-        name: "مود الزراعة السريعة",
-        desc: "يسمح بزراعة المحاصيل بسرعة كبيرة بضغطة زر واحدة.",
-        img: "https://i.ibb.co/nD9Xy3k/farmmod.png",
-        link: "https://www.mediafire.com/file/example/farmmod.mcaddon/file"
-      }
-    ];
+  <h3>✨ أضف مود جديد</h3>
+  <input id="modName" placeholder="اسم المود"><br>
+  <textarea id="modDesc" placeholder="وصف المود"></textarea><br>
+  <input id="modImage" placeholder="رابط الصورة"><br>
+  <input id="modLink" placeholder="رابط التحميل"><br>
+  <button onclick="addMod()">نشر المود</button>
 
-    const container = document.getElementById('modsContainer');
-    const btn = document.getElementById('addModBtn');
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-    function renderMods() {
-      container.innerHTML = '';
-      mods.forEach(mod => {
-        const div = document.createElement('div');
-        div.className = 'mod-box';
-        div.innerHTML = `
-          <h3>${mod.name}</h3>
-          <img src="${mod.img}" alt="${mod.name}">
-          <p>${mod.desc}</p>
-          <a href="${mod.link}" target="_blank">
-            <button>تحميل المود</button>
-          </a>
+    // ⚠️ حط هنا بيانات Firebase بتاعتك
+    const firebaseConfig = {
+      apiKey: "xxxxxxxxxxxxxxxxxxxx",
+      authDomain: "xxxxxxxxxxxxxxxxxxxx",
+      projectId: "xxxxxxxxxxxxxxxxxxxx",
+      storageBucket: "xxxxxxxxxxxxxxxxxxxx",
+      messagingSenderId: "xxxxxxxxxxxxxxxxxxxx",
+      appId: "xxxxxxxxxxxxxxxxxxxx"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadMods() {
+      const modsDiv = document.getElementById("mods");
+      modsDiv.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "mods"));
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        modsDiv.innerHTML += `
+          <div class="mod-box">
+            <h3>${data.name}</h3>
+            <img src="${data.image}" alt="${data.name}">
+            <p>${data.desc}</p>
+            <a href="${data.link}" target="_blank">
+              <button>رابط التحميل</button>
+            </a>
+          </div>
         `;
-        container.appendChild(div);
       });
     }
 
-    // تشغيل الزرار الأخضر
-    btn.addEventListener('click', () => {
-      const name = document.getElementById('modName').value.trim();
-      const desc = document.getElementById('modDesc').value.trim();
-      const img = document.getElementById('modImg').value.trim();
-      const link = document.getElementById('modLink').value.trim();
+    async function addMod() {
+      const name = document.getElementById("modName").value;
+      const desc = document.getElementById("modDesc").value;
+      const image = document.getElementById("modImage").value;
+      const link = document.getElementById("modLink").value;
 
-      if (!name || !desc || !img || !link) {
-        alert("من فضلك املأ جميع الخانات قبل النشر!");
+      if (!name || !desc || !image || !link) {
+        alert("❌ من فضلك املأ كل الخانات!");
         return;
       }
 
-      mods.push({ name, desc, img, link });
-      renderMods();
-
-      // مسح البيانات بعد النشر
-      document.getElementById('modName').value = '';
-      document.getElementById('modDesc').value = '';
-      document.getElementById('modImg').value = '';
-      document.getElementById('modLink').value = '';
-
+      await addDoc(collection(db, "mods"), { name, desc, image, link });
       alert("✅ تم نشر المود بنجاح!");
-    });
+      loadMods();
+    }
 
-    // عرض المودات الجاهزة
-    renderMods();
+    loadMods();
   </script>
-
-  <footer style="margin-top:20px; font-size:18px;">
-    📢 تابع قناة التيليجرام:
-    <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">اضغط هنا</a>
-  </footer>
-
 </body>
 </html>
