@@ -69,6 +69,36 @@
       margin-top: 10px;
       cursor: pointer;
     }
+    /* فورم إضافة المود */
+    #addModForm {
+      display: none;
+      background-color: #f8f8f8;
+      border: 2px solid #ddd;
+      border-radius: 15px;
+      padding: 15px;
+      width: 80%;
+      margin: 20px auto;
+      box-shadow: 0 0 10px #ccc;
+    }
+    input {
+      display: block;
+      width: 90%;
+      margin: 10px auto;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      text-align: center;
+    }
+    .submit-btn {
+      background-color: green;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -86,10 +116,18 @@
 
   <div id="modsContainer"></div>
 
-  <footer onclick="addMod()">🔺 نشر مود جديد</footer>
+  <!-- فورم نشر مود -->
+  <div id="addModForm">
+    <h3>🛠 أضف مود جديد</h3>
+    <input type="text" id="modName" placeholder="اسم المود">
+    <input type="text" id="modImage" placeholder="رابط صورة المود">
+    <input type="text" id="modLink" placeholder="رابط التحميل">
+    <button class="submit-btn" onclick="saveMod()">نشر المود ✅</button>
+  </div>
+
+  <footer onclick="toggleForm()">🔺 نشر مود جديد</footer>
 
   <script>
-    // تحميل المودات من LocalStorage
     let mods = JSON.parse(localStorage.getItem("mods")) || [];
 
     function displayMods() {
@@ -104,7 +142,6 @@
           <br>
           <a href="${mod.link}" class="telegram" target="_blank">تحميل المود</a><br>
         `;
-        // لو المستخدم هو صاحب المود يظهر له زر الحذف
         if (mod.owner === localStorage.getItem("username")) {
           const deleteBtn = document.createElement("button");
           deleteBtn.className = "delete-btn";
@@ -116,28 +153,38 @@
       });
     }
 
-    // حذف المود
     function deleteMod(index) {
       mods.splice(index, 1);
       localStorage.setItem("mods", JSON.stringify(mods));
       displayMods();
     }
 
-    // نشر مود جديد
-    function addMod() {
+    function toggleForm() {
+      const form = document.getElementById("addModForm");
+      form.style.display = (form.style.display === "block") ? "none" : "block";
+    }
+
+    function saveMod() {
       let username = localStorage.getItem("username");
       if (!username) {
         username = prompt("اكتب اسمك عشان نسجل إن المود ده ليك:");
         if (username) localStorage.setItem("username", username);
         else return alert("لازم تكتب اسمك!");
       }
-      const name = prompt("اكتب اسم المود:");
-      const image = prompt("حط رابط صورة المود:");
-      const link = prompt("حط رابط التحميل:");
+      const name = document.getElementById("modName").value.trim();
+      const image = document.getElementById("modImage").value.trim();
+      const link = document.getElementById("modLink").value.trim();
+
       if (name && image && link) {
         mods.push({ name, image, link, owner: username });
         localStorage.setItem("mods", JSON.stringify(mods));
         displayMods();
+        document.getElementById("addModForm").style.display = "none";
+        document.getElementById("modName").value = "";
+        document.getElementById("modImage").value = "";
+        document.getElementById("modLink").value = "";
+      } else {
+        alert("من فضلك املأ كل الخانات!");
       }
     }
 
