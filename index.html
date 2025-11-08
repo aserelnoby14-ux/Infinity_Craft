@@ -6,143 +6,86 @@
   <title>Infinity_Craft - مودات الموبايل</title>
   <style>
     body {
-      background: #fff;
       font-family: "Cairo", sans-serif;
-      text-align: center;
+      background-color: white;
       margin: 0;
       padding: 0;
+      text-align: center;
+      direction: rtl;
     }
     header {
-      background-color: #d32f2f;
+      background-color: red;
       color: white;
       padding: 15px;
       font-size: 22px;
       font-weight: bold;
     }
-    .btns {
-      margin: 20px 0;
-    }
-    button {
-      font-size: 16px;
+    .button {
+      display: inline-block;
+      margin: 10px;
       padding: 10px 20px;
-      margin: 5px;
+      border-radius: 10px;
       border: none;
-      border-radius: 10px;
+      font-size: 16px;
       cursor: pointer;
-      transition: 0.3s;
     }
-    .upload-btn { background: #4caf50; color: white; }
-    .update-btn { background: white; color: #d32f2f; border: 2px solid #d32f2f; }
-    .mod-card {
-      background: #f9f9f9;
-      border: 2px solid #ddd;
+    .update-btn {
+      background-color: white;
+      color: red;
+      border: 2px solid red;
+    }
+    .mod-box {
+      border: 1px solid #ccc;
       border-radius: 15px;
-      padding: 10px;
-      margin: 15px;
-      width: 85%;
-      margin-inline: auto;
+      padding: 15px;
+      margin: 20px;
+      box-shadow: 0 0 10px #ddd;
     }
-    .mod-card img {
-      width: 100%;
+    img {
+      width: 90%;
       border-radius: 10px;
-    }
-    footer {
-      background: purple;
-      color: white;
-      padding: 12px;
-      font-size: 18px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      cursor: pointer;
     }
     a {
       text-decoration: none;
-      color: #d32f2f;
+    }
+    .telegram {
+      color: red;
       font-weight: bold;
+    }
+    footer {
+      background-color: purple;
+      color: white;
+      padding: 15px;
+      font-size: 18px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-  <header>Infinity_Craft - مودات الموبايل</header>
+  <header>
+    Infinity_Craft - مودات الموبايل
+  </header>
 
-  <div class="btns">
-    <button class="upload-btn" onclick="showUploadForm()">انشر مودك</button>
-    <button class="update-btn" onclick="loadMods()">تحديث</button>
-  </div>
+  <button class="button update-btn" onclick="location.reload()">تحديث</button>
 
-  <p>مرحباً بكم في موقع مودات <strong>Infinity_Craft</strong></p>
-  <p>رابط قناة التليجرام: 
-    <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">
+  <p>مرحباً بكم في موقع مودات <b>Infinity_Craft</b></p>
+  <p>رابط قناة التليجرام:
+    <a href="https://t.me/+qq_iB3QRLpJjMGFk" class="telegram" target="_blank">
       https://t.me/+qq_iB3QRLpJjMGFk
     </a>
   </p>
 
-  <div id="mods"></div>
-
-  <footer onclick="showUploadForm()">🔺 نشر مود جديد</footer>
-
-  <!-- ✅ نموذج نشر المود -->
-  <div id="uploadForm" style="display:none; padding:20px;">
-    <h3>🧩 ارفع مودك</h3>
-    <input type="text" id="modName" placeholder="اسم المود" style="width:80%;padding:10px;"><br><br>
-    <input type="text" id="modImage" placeholder="رابط صورة المود" style="width:80%;padding:10px;"><br><br>
-    <input type="text" id="modLink" placeholder="رابط تحميل المود" style="width:80%;padding:10px;"><br><br>
-    <button onclick="uploadMod()">نشر</button>
+  <div class="mod-box">
+    <h3>مود السيوف الخارقة</h3>
+    <img src="https://i.imgur.com/yourimage.jpg" alt="صورة المود">
+    <br>
+    <a href="#" class="telegram">تحميل المود</a>
   </div>
 
-  <script>
-    // ✅ مودات الصبح القديمة
-    let mods = JSON.parse(localStorage.getItem("mods")) || [
-      {
-        name: "مود السيوف الخارقة",
-        image: "https://i.imgur.com/7hOZ7yZ.png",
-        link: "#"
-      },
-      {
-        name: "مود القرويين الأذكياء",
-        image: "https://i.imgur.com/Lx7sXzN.png",
-        link: "#"
-      }
-    ];
-
-    function loadMods() {
-      const modsDiv = document.getElementById("mods");
-      modsDiv.innerHTML = "";
-      mods.forEach(mod => {
-        modsDiv.innerHTML += `
-          <div class="mod-card">
-            <h3>${mod.name}</h3>
-            <img src="${mod.image}" alt="${mod.name}">
-            <p><a href="${mod.link}" target="_blank">تحميل المود</a></p>
-          </div>
-        `;
-      });
-    }
-
-    function showUploadForm() {
-      document.getElementById("uploadForm").style.display = "block";
-    }
-
-    function uploadMod() {
-      const name = document.getElementById("modName").value;
-      const image = document.getElementById("modImage").value;
-      const link = document.getElementById("modLink").value;
-
-      if (name && image && link) {
-        mods.push({ name, image, link });
-        localStorage.setItem("mods", JSON.stringify(mods));
-        alert("تم نشر المود بنجاح ✅");
-        document.getElementById("uploadForm").style.display = "none";
-        loadMods();
-      } else {
-        alert("من فضلك املأ كل الخانات 🔺");
-      }
-    }
-
-    loadMods();
-  </script>
+  <footer onclick="window.location.href='https://infinity-craft-k1ub.vercel.app/upload.html'">
+    🔺 نشر مود جديد
+  </footer>
 
 </body>
 </html>
