@@ -58,14 +58,22 @@
       padding: 15px;
       font-size: 18px;
       margin-top: 20px;
+      cursor: pointer;
+    }
+    .delete-btn {
+      background-color: red;
+      color: white;
+      padding: 7px 15px;
+      border: none;
+      border-radius: 10px;
+      margin-top: 10px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    Infinity_Craft - مودات الموبايل
-  </header>
+  <header>Infinity_Craft - مودات الموبايل</header>
 
   <button class="button update-btn" onclick="location.reload()">تحديث</button>
 
@@ -76,16 +84,65 @@
     </a>
   </p>
 
-  <div class="mod-box">
-    <h3>مود السيوف الخارقة</h3>
-    <img src="https://i.imgur.com/yourimage.jpg" alt="صورة المود">
-    <br>
-    <a href="#" class="telegram">تحميل المود</a>
-  </div>
+  <div id="modsContainer"></div>
 
-  <footer onclick="window.location.href='https://infinity-craft-k1ub.vercel.app/upload.html'">
-    🔺 نشر مود جديد
-  </footer>
+  <footer onclick="addMod()">🔺 نشر مود جديد</footer>
+
+  <script>
+    // تحميل المودات من LocalStorage
+    let mods = JSON.parse(localStorage.getItem("mods")) || [];
+
+    function displayMods() {
+      const container = document.getElementById("modsContainer");
+      container.innerHTML = "";
+      mods.forEach((mod, index) => {
+        const modDiv = document.createElement("div");
+        modDiv.className = "mod-box";
+        modDiv.innerHTML = `
+          <h3>${mod.name}</h3>
+          <img src="${mod.image}" alt="صورة المود" onerror="this.src='https://via.placeholder.com/300x150?text=صورة+غير+متوفرة';">
+          <br>
+          <a href="${mod.link}" class="telegram" target="_blank">تحميل المود</a><br>
+        `;
+        // لو المستخدم هو صاحب المود يظهر له زر الحذف
+        if (mod.owner === localStorage.getItem("username")) {
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "delete-btn";
+          deleteBtn.innerText = "🗑 حذف المود";
+          deleteBtn.onclick = () => deleteMod(index);
+          modDiv.appendChild(deleteBtn);
+        }
+        container.appendChild(modDiv);
+      });
+    }
+
+    // حذف المود
+    function deleteMod(index) {
+      mods.splice(index, 1);
+      localStorage.setItem("mods", JSON.stringify(mods));
+      displayMods();
+    }
+
+    // نشر مود جديد
+    function addMod() {
+      let username = localStorage.getItem("username");
+      if (!username) {
+        username = prompt("اكتب اسمك عشان نسجل إن المود ده ليك:");
+        if (username) localStorage.setItem("username", username);
+        else return alert("لازم تكتب اسمك!");
+      }
+      const name = prompt("اكتب اسم المود:");
+      const image = prompt("حط رابط صورة المود:");
+      const link = prompt("حط رابط التحميل:");
+      if (name && image && link) {
+        mods.push({ name, image, link, owner: username });
+        localStorage.setItem("mods", JSON.stringify(mods));
+        displayMods();
+      }
+    }
+
+    displayMods();
+  </script>
 
 </body>
 </html>
