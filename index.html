@@ -1,195 +1,153 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infinity_Craft - مودات الموبايل</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infinity Craft - تحميل المودات</title>
   <style>
     body {
-      font-family: "Cairo", sans-serif;
-      background-color: white;
+      background: white;
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
       margin: 0;
       padding: 0;
       text-align: center;
-      direction: rtl;
     }
     header {
-      background-color: red;
+      background: red;
       color: white;
       padding: 15px;
       font-size: 22px;
       font-weight: bold;
     }
-    .button {
-      display: inline-block;
-      margin: 10px;
-      padding: 10px 20px;
-      border-radius: 10px;
-      border: none;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .update-btn {
-      background-color: white;
-      color: red;
-      border: 2px solid red;
-    }
     .mod-box {
-      border: 1px solid #ccc;
+      border: 2px solid #4CAF50;
+      border-radius: 15px;
+      padding: 10px;
+      margin: 15px auto;
+      max-width: 400px;
+      text-align: center;
+      background: #f9f9f9;
+      box-shadow: 0px 0px 10px #ccc;
+    }
+    .mod-box img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .upload-section {
+      background: #f1f1f1;
       border-radius: 15px;
       padding: 15px;
       margin: 20px;
-      box-shadow: 0 0 10px #ddd;
     }
-    img {
+    input, textarea {
       width: 90%;
-      border-radius: 10px;
-    }
-    a {
-      text-decoration: none;
-    }
-    .telegram {
-      color: red;
-      font-weight: bold;
-    }
-    footer {
-      background-color: purple;
-      color: white;
-      padding: 15px;
-      font-size: 18px;
-      margin-top: 20px;
-      cursor: pointer;
-    }
-    .delete-btn {
-      background-color: red;
-      color: white;
-      padding: 7px 15px;
-      border: none;
-      border-radius: 10px;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-    /* فورم إضافة المود */
-    #addModForm {
-      display: none;
-      background-color: #f8f8f8;
-      border: 2px solid #ddd;
-      border-radius: 15px;
-      padding: 15px;
-      width: 80%;
-      margin: 20px auto;
-      box-shadow: 0 0 10px #ccc;
-    }
-    input {
-      display: block;
-      width: 90%;
-      margin: 10px auto;
-      padding: 10px;
+      margin: 8px 0;
+      padding: 8px;
+      border-radius: 8px;
       border: 1px solid #ccc;
-      border-radius: 10px;
       font-size: 16px;
-      text-align: center;
     }
-    .submit-btn {
-      background-color: green;
+    button {
+      background: #4CAF50;
       color: white;
       border: none;
       padding: 10px 20px;
-      border-radius: 10px;
-      font-size: 16px;
+      border-radius: 8px;
       cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #45a049;
     }
   </style>
 </head>
 <body>
 
-  <header>Infinity_Craft - مودات الموبايل</header>
+  <header>Infinity Craft - تحميل المودات</header>
 
-  <button class="button update-btn" onclick="location.reload()">تحديث</button>
-
-  <p>مرحباً بكم في موقع مودات <b>Infinity_Craft</b></p>
-  <p>رابط قناة التليجرام:
-    <a href="https://t.me/+qq_iB3QRLpJjMGFk" class="telegram" target="_blank">
-      https://t.me/+qq_iB3QRLpJjMGFk
-    </a>
-  </p>
-
-  <div id="modsContainer"></div>
-
-  <!-- فورم نشر مود -->
-  <div id="addModForm">
-    <h3>🛠 أضف مود جديد</h3>
-    <input type="text" id="modName" placeholder="اسم المود">
-    <input type="text" id="modImage" placeholder="رابط صورة المود">
-    <input type="text" id="modLink" placeholder="رابط التحميل">
-    <button class="submit-btn" onclick="saveMod()">نشر المود ✅</button>
+  <!-- قسم نشر المود -->
+  <div class="upload-section">
+    <h2>🔧 نشر مود جديد</h2>
+    <input type="text" id="modName" placeholder="اسم المود"><br>
+    <textarea id="modDesc" placeholder="وصف المود"></textarea><br>
+    <input type="text" id="modImg" placeholder="رابط صورة المود (من موقع رفع الصور)"><br>
+    <input type="text" id="modLink" placeholder="رابط التحميل (من ميديافاير مثلًا)"><br>
+    <button id="addModBtn">✅ نشر المود</button>
   </div>
 
-  <footer onclick="toggleForm()">🔺 نشر مود جديد</footer>
+  <!-- هنا هتظهر المودات -->
+  <div id="modsContainer"></div>
 
   <script>
-    let mods = JSON.parse(localStorage.getItem("mods")) || [];
+    // مودين جاهزين (بتوع الصبح)
+    const mods = [
+      {
+        name: "مود اليد الثانية",
+        desc: "يسمح لك بوضع أدوات في اليد الثانية بالضغط مرتين على Shift.",
+        img: "https://i.ibb.co/Ngfsmmzj/secondhand.png",
+        link: "https://www.mediafire.com/file/ccoxwnjlt80iloj/Raiyons_OffHandV1.4.mcaddon/file"
+      },
+      {
+        name: "مود الزراعة السريعة",
+        desc: "يسمح بزراعة المحاصيل بسرعة كبيرة بضغطة زر واحدة.",
+        img: "https://i.ibb.co/nD9Xy3k/farmmod.png",
+        link: "https://www.mediafire.com/file/example/farmmod.mcaddon/file"
+      }
+    ];
 
-    function displayMods() {
-      const container = document.getElementById("modsContainer");
-      container.innerHTML = "";
-      mods.forEach((mod, index) => {
-        const modDiv = document.createElement("div");
-        modDiv.className = "mod-box";
-        modDiv.innerHTML = `
+    const container = document.getElementById('modsContainer');
+    const btn = document.getElementById('addModBtn');
+
+    function renderMods() {
+      container.innerHTML = '';
+      mods.forEach(mod => {
+        const div = document.createElement('div');
+        div.className = 'mod-box';
+        div.innerHTML = `
           <h3>${mod.name}</h3>
-          <img src="${mod.image}" alt="صورة المود" onerror="this.src='https://via.placeholder.com/300x150?text=صورة+غير+متوفرة';">
-          <br>
-          <a href="${mod.link}" class="telegram" target="_blank">تحميل المود</a><br>
+          <img src="${mod.img}" alt="${mod.name}">
+          <p>${mod.desc}</p>
+          <a href="${mod.link}" target="_blank">
+            <button>تحميل المود</button>
+          </a>
         `;
-        if (mod.owner === localStorage.getItem("username")) {
-          const deleteBtn = document.createElement("button");
-          deleteBtn.className = "delete-btn";
-          deleteBtn.innerText = "🗑 حذف المود";
-          deleteBtn.onclick = () => deleteMod(index);
-          modDiv.appendChild(deleteBtn);
-        }
-        container.appendChild(modDiv);
+        container.appendChild(div);
       });
     }
 
-    function deleteMod(index) {
-      mods.splice(index, 1);
-      localStorage.setItem("mods", JSON.stringify(mods));
-      displayMods();
-    }
+    // تشغيل الزرار الأخضر
+    btn.addEventListener('click', () => {
+      const name = document.getElementById('modName').value.trim();
+      const desc = document.getElementById('modDesc').value.trim();
+      const img = document.getElementById('modImg').value.trim();
+      const link = document.getElementById('modLink').value.trim();
 
-    function toggleForm() {
-      const form = document.getElementById("addModForm");
-      form.style.display = (form.style.display === "block") ? "none" : "block";
-    }
-
-    function saveMod() {
-      let username = localStorage.getItem("username");
-      if (!username) {
-        username = prompt("اكتب اسمك عشان نسجل إن المود ده ليك:");
-        if (username) localStorage.setItem("username", username);
-        else return alert("لازم تكتب اسمك!");
+      if (!name || !desc || !img || !link) {
+        alert("من فضلك املأ جميع الخانات قبل النشر!");
+        return;
       }
-      const name = document.getElementById("modName").value.trim();
-      const image = document.getElementById("modImage").value.trim();
-      const link = document.getElementById("modLink").value.trim();
 
-      if (name && image && link) {
-        mods.push({ name, image, link, owner: username });
-        localStorage.setItem("mods", JSON.stringify(mods));
-        displayMods();
-        document.getElementById("addModForm").style.display = "none";
-        document.getElementById("modName").value = "";
-        document.getElementById("modImage").value = "";
-        document.getElementById("modLink").value = "";
-      } else {
-        alert("من فضلك املأ كل الخانات!");
-      }
-    }
+      mods.push({ name, desc, img, link });
+      renderMods();
 
-    displayMods();
+      // مسح البيانات بعد النشر
+      document.getElementById('modName').value = '';
+      document.getElementById('modDesc').value = '';
+      document.getElementById('modImg').value = '';
+      document.getElementById('modLink').value = '';
+
+      alert("✅ تم نشر المود بنجاح!");
+    });
+
+    // عرض المودات الجاهزة
+    renderMods();
   </script>
+
+  <footer style="margin-top:20px; font-size:18px;">
+    📢 تابع قناة التيليجرام:
+    <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">اضغط هنا</a>
+  </footer>
 
 </body>
 </html>
