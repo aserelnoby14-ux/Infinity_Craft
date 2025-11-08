@@ -1,171 +1,65 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Infinity_Craft - مودات</title>
-
-  <!-- CSS بسيط حسب طلبك: خلفية بيضا، هيدر أحمر، مربع أخضر للصورة -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinity_Craft - مودات الموبايل</title>
   <style>
-    :root{
-      --red:#E53935;
-      --green:#4CAF50;
-      --white:#ffffff;
-      --muted:#666;
-      --card-bg:#f9f9f9;
+    body {
+      background: #fff;
+      font-family: "Cairo", sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
     }
-    body{
-      margin:0;
-      font-family: Arial, "Noto Naskh Arabic", sans-serif;
-      background:var(--white);
-      color:#111;
+    header {
+      background-color: #d32f2f;
+      color: white;
+      padding: 15px;
+      font-size: 22px;
+      font-weight: bold;
     }
-    header{
-      background:var(--red);
-      color: #fff;
-      padding:18px 16px;
-      text-align:center;
-      font-size:20px;
-      font-weight:700;
+    .btns {
+      margin: 20px 0;
     }
-    .container{
-      max-width:1000px;
-      margin:18px auto;
-      padding:0 12px 60px;
+    button {
+      font-size: 16px;
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
     }
-    .top-actions{
-      display:flex;
-      gap:10px;
-      justify-content:space-between;
-      align-items:center;
-      margin:14px 0;
+    .upload-btn { background: #4caf50; color: white; }
+    .update-btn { background: white; color: #d32f2f; border: 2px solid #d32f2f; }
+    .mod-card {
+      background: #f9f9f9;
+      border: 2px solid #ddd;
+      border-radius: 15px;
+      padding: 10px;
+      margin: 15px;
+      width: 85%;
+      margin-inline: auto;
     }
-    .btn{
-      background:var(--green);
-      color:#fff;
-      border:none;
-      padding:10px 14px;
-      border-radius:8px;
-      cursor:pointer;
-      font-weight:700;
+    .mod-card img {
+      width: 100%;
+      border-radius: 10px;
     }
-    .btn.secondary{
-      background:transparent;
-      border:2px solid var(--red);
-      color:var(--red);
+    footer {
+      background: purple;
+      color: white;
+      padding: 12px;
+      font-size: 18px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      cursor: pointer;
     }
-    /* Grid for mods */
-    .mods-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
-      gap:16px;
-      margin-top:12px;
-    }
-    .mod-card{
-      background:var(--card-bg);
-      border-radius:12px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.06);
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-    }
-    .mod-image{
-      background:var(--green);
-      height:180px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-    }
-    .mod-image img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-    }
-    .mod-body{
-      padding:12px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .mod-title{
-      font-size:18px;
-      font-weight:800;
-    }
-    .mod-desc{
-      font-size:13px;
-      color:var(--muted);
-      min-height:36px;
-    }
-    .mod-actions{
-      display:flex;
-      gap:10px;
-      justify-content:flex-start;
-      align-items:center;
-      margin-top:6px;
-    }
-    .download-btn{
-      background:var(--red);
-      color:#fff;
-      border:none;
-      padding:8px 12px;
-      border-radius:8px;
-      cursor:pointer;
-      font-weight:700;
-      text-decoration:none;
-    }
-
-    /* Upload modal (simple) */
-    .overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.5);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:999;
-    }
-    .modal{
-      width:min(720px, 96%);
-      background:#fff;
-      border-radius:12px;
-      padding:16px;
-      direction:rtl;
-    }
-    .form-row{ display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
-    .form-row input[type="text"], .form-row textarea, .form-row input[type="url"]{
-      width:100%;
-      padding:10px;
-      border-radius:8px;
-      border:1px solid #ddd;
-      font-size:14px;
-    }
-    .file-preview{
-      width:100%;
-      height:200px;
-      background:#f0f0f0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-radius:8px;
-      overflow:hidden;
-    }
-    footer{
-      text-align:center;
-      margin-top:18px;
-      padding:18px 8px;
-      color:#444;
-      font-size:14px;
-    }
-    a.telegram{
-      color:var(--red);
-      text-decoration:none;
-      font-weight:700;
-    }
-
-    /* responsive */
-    @media (max-width:560px){
-      .top-actions{flex-direction:column; align-items:stretch}
+    a {
+      text-decoration: none;
+      color: #d32f2f;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -173,263 +67,82 @@
 
   <header>Infinity_Craft - مودات الموبايل</header>
 
-  <div class="container">
-    <div class="top-actions">
-      <div>
-        <button id="openUpload" class="btn">انشر مودك</button>
-        <button id="refresh" class="btn secondary">تحديث</button>
-      </div>
-      <div style="font-size:14px;color:#333">
-        مرحباً بكم في موقع مودات <strong>Infinity_Craft</strong>
-      </div>
-    </div>
-
-    <!-- قائمة المودات -->
-    <div id="modsGrid" class="mods-grid">
-      <!-- البطاقات هتتعمر ديناميكياً -->
-    </div>
-
-    <div id="emptyState" style="text-align:center;color:#777;margin-top:30px;display:none;">
-      لا يوجد مودات حتى الآن — كن أول من ينشر!
-    </div>
-
-    <footer>
-      رابط قناة التليجرام: 
-      <a class="telegram" href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">https://t.me/+qq_iB3QRLpJjMGFk</a>
-    </footer>
+  <div class="btns">
+    <button class="upload-btn" onclick="showUploadForm()">انشر مودك</button>
+    <button class="update-btn" onclick="loadMods()">تحديث</button>
   </div>
 
-  <!-- نافذة الرفع -->
-  <div id="uploadOverlay" class="overlay" style="display:none;">
-    <div class="modal" role="dialog" aria-modal="true">
-      <h3 style="margin:0 0 10px 0">انشر مودك</h3>
+  <p>مرحباً بكم في موقع مودات <strong>Infinity_Craft</strong></p>
+  <p>رابط قناة التليجرام: 
+    <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">
+      https://t.me/+qq_iB3QRLpJjMGFk
+    </a>
+  </p>
 
-      <div class="form-row">
-        <input id="modName" type="text" placeholder="اسم المود" />
-      </div>
-      <div class="form-row">
-        <textarea id="modDesc" rows="3" placeholder="وصف المود"></textarea>
-      </div>
+  <div id="mods"></div>
 
-      <div class="form-row">
-        <input id="modLink" type="url" placeholder="رابط التحميل (مثال: رابط ميديافاير)" />
-      </div>
+  <footer onclick="showUploadForm()">🔺 نشر مود جديد</footer>
 
-      <div class="form-row">
-        <label style="display:block;width:100%;cursor:pointer;">
-          <div style="padding:10px;border-radius:8px;border:1px dashed #ddd;text-align:center;">
-            اختر صورة للمود (ستعرض هنا)
-            <input id="modImageInput" type="file" accept="image/*" style="display:none" />
-          </div>
-        </label>
-      </div>
-
-      <div class="form-row">
-        <div class="file-preview" id="filePreview">لا يوجد صورة</div>
-      </div>
-
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
-        <button id="cancelUpload" class="btn secondary">إلغاء</button>
-        <button id="sendUpload" class="btn">نشر المود</button>
-      </div>
-    </div>
+  <!-- ✅ نموذج نشر المود -->
+  <div id="uploadForm" style="display:none; padding:20px;">
+    <h3>🧩 ارفع مودك</h3>
+    <input type="text" id="modName" placeholder="اسم المود" style="width:80%;padding:10px;"><br><br>
+    <input type="text" id="modImage" placeholder="رابط صورة المود" style="width:80%;padding:10px;"><br><br>
+    <input type="text" id="modLink" placeholder="رابط تحميل المود" style="width:80%;padding:10px;"><br><br>
+    <button onclick="uploadMod()">نشر</button>
   </div>
-
-  <!-- Firebase SDKs (compat) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
 
   <script>
-    /*******************************************
-     * 1) ضَع هنا إعدادات Firebase (حط config لمشروعك)
-     *   -> روح Firebase console > Project settings > SDK setup > config
-     *******************************************/
-    const firebaseConfig = {
-      apiKey: "PUT_YOUR_apiKey_HERE",
-      authDomain: "PUT_YOUR_authDomain_HERE",
-      databaseURL: "PUT_YOUR_databaseURL_HERE",
-      projectId: "PUT_YOUR_projectId_HERE",
-      storageBucket: "PUT_YOUR_storageBucket_HERE",
-      messagingSenderId: "PUT_YOUR_messagingSenderId_HERE",
-      appId: "PUT_YOUR_appId_HERE"
-    };
-
-    // init
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const storage = firebase.storage();
-
-    // عناصر واجهة
-    const modsGrid = document.getElementById('modsGrid');
-    const emptyState = document.getElementById('emptyState');
-    const openUpload = document.getElementById('openUpload');
-    const uploadOverlay = document.getElementById('uploadOverlay');
-    const cancelUpload = document.getElementById('cancelUpload');
-    const sendUpload = document.getElementById('sendUpload');
-    const modImageInput = document.getElementById('modImageInput');
-    const filePreview = document.getElementById('filePreview');
-    const refreshBtn = document.getElementById('refresh');
-
-    // form fields
-    const modNameField = document.getElementById('modName');
-    const modDescField = document.getElementById('modDesc');
-    const modLinkField = document.getElementById('modLink');
-
-    let selectedImageFile = null;
-
-    // فتح/اغلاق الفورم
-    openUpload.addEventListener('click', ()=> {
-      uploadOverlay.style.display = 'flex';
-    });
-    cancelUpload.addEventListener('click', ()=> {
-      uploadOverlay.style.display = 'none';
-      clearForm();
-    });
-
-    // اختيار صورة وعرض بريڤيو
-    modImageInput.addEventListener('change', (e)=>{
-      const f = e.target.files[0];
-      if(!f) return;
-      selectedImageFile = f;
-      const reader = new FileReader();
-      reader.onload = function(ev){
-        filePreview.innerHTML = '<img src="'+ev.target.result+'" style="width:100%;height:100%;object-fit:cover;" />';
-      };
-      reader.readAsDataURL(f);
-    });
-
-    // لو حد ضغط في المنطقة نفتح اختيار الملف
-    filePreview.addEventListener('click', ()=> modImageInput.click());
-
-    // إرسال المود
-    sendUpload.addEventListener('click', async ()=> {
-      const name = modNameField.value.trim();
-      const desc = modDescField.value.trim();
-      const link = modLinkField.value.trim();
-
-      if(!name || !desc || !link){
-        alert('من فضلك املأ الاسم والوصف والرابط');
-        return;
+    // ✅ مودات الصبح القديمة
+    let mods = JSON.parse(localStorage.getItem("mods")) || [
+      {
+        name: "مود السيوف الخارقة",
+        image: "https://i.imgur.com/7hOZ7yZ.png",
+        link: "#"
+      },
+      {
+        name: "مود القرويين الأذكياء",
+        image: "https://i.imgur.com/Lx7sXzN.png",
+        link: "#"
       }
+    ];
 
-      // نرفع الصورة أولاً إلى Storage (لو محدد)
-      let imageUrl = '';
-      try{
-        if(selectedImageFile){
-          const storageRef = storage.ref().child('mods_images/' + Date.now() + '_' + selectedImageFile.name);
-          const snapshot = await storageRef.put(selectedImageFile);
-          imageUrl = await snapshot.ref.getDownloadURL();
-        }
-
-        // ادخل بيانات المود في Realtime Database
-        const newRef = db.ref('mods').push();
-        await newRef.set({
-          name: name,
-          desc: desc,
-          image: imageUrl,
-          link: link,
-          timestamp: firebase.database.ServerValue.TIMESTAMP
-        });
-
-        alert('تم نشر المود بنجاح ✅');
-        uploadOverlay.style.display = 'none';
-        clearForm();
-      }catch(err){
-        console.error(err);
-        alert('حدث خطأ أثناء الرفع: ' + (err.message || err));
-      }
-    });
-
-    function clearForm(){
-      modNameField.value = '';
-      modDescField.value = '';
-      modLinkField.value = '';
-      modImageInput.value = '';
-      selectedImageFile = null;
-      filePreview.innerHTML = 'لا يوجد صورة';
-    }
-
-    // دالة لإنشاء بطاقة مود في DOM
-    function createModCard(modData){
-      const div = document.createElement('div');
-      div.className = 'mod-card';
-
-      const imgDiv = document.createElement('div');
-      imgDiv.className = 'mod-image';
-      if(modData.image){
-        imgDiv.innerHTML = '<img src="'+modData.image+'" alt="'+escapeHtml(modData.name)+'" />';
-      }else{
-        imgDiv.innerHTML = '<div style="padding:12px;color:#fff;font-weight:700">لا صورة</div>';
-      }
-
-      const body = document.createElement('div');
-      body.className = 'mod-body';
-
-      const title = document.createElement('div');
-      title.className = 'mod-title';
-      title.textContent = modData.name || 'بدون اسم';
-
-      const desc = document.createElement('div');
-      desc.className = 'mod-desc';
-      desc.textContent = modData.desc || '';
-
-      const actions = document.createElement('div');
-      actions.className = 'mod-actions';
-
-      const download = document.createElement('a');
-      download.className = 'download-btn';
-      download.textContent = 'تحميل المود';
-      download.href = modData.link || '#';
-      download.target = '_blank';
-      actions.appendChild(download);
-
-      body.appendChild(title);
-      body.appendChild(desc);
-      body.appendChild(actions);
-
-      div.appendChild(imgDiv);
-      div.appendChild(body);
-
-      return div;
-    }
-
-    // تحميل وعرض المودات من Firebase (Realtime)
-    function listenForMods(){
-      const ref = db.ref('mods').orderByChild('timestamp');
-      ref.on('value', snapshot => {
-        modsGrid.innerHTML = '';
-        const val = snapshot.val();
-        if(!val){
-          emptyState.style.display = 'block';
-          return;
-        }
-        emptyState.style.display = 'none';
-        // نعاكس الترتيب عشان الأحدث يظهر أول
-        const items = Object.keys(val).map(k => ({key:k, ...val[k]})).sort((a,b)=>b.timestamp - a.timestamp);
-        for(const item of items){
-          const card = createModCard(item);
-          modsGrid.appendChild(card);
-        }
+    function loadMods() {
+      const modsDiv = document.getElementById("mods");
+      modsDiv.innerHTML = "";
+      mods.forEach(mod => {
+        modsDiv.innerHTML += `
+          <div class="mod-card">
+            <h3>${mod.name}</h3>
+            <img src="${mod.image}" alt="${mod.name}">
+            <p><a href="${mod.link}" target="_blank">تحميل المود</a></p>
+          </div>
+        `;
       });
     }
 
-    // زر التحديث اليدوي
-    refreshBtn.addEventListener('click', ()=> {
-      // إعادة تحميل البيانات من Firebase مباشرة (on value already مفعّل)
-      // فقط لإعطاء رد فعل سريع:
-      alert('يتم تحديث القائمة (آلياً تظهر التغييرات من Firebase)');
-    });
-
-    // ترميز بسيط لمنع XSS في النصوص
-    function escapeHtml(str){
-      if(!str) return '';
-      return str.replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]); });
+    function showUploadForm() {
+      document.getElementById("uploadForm").style.display = "block";
     }
 
-    // شغّل listener
-    listenForMods();
+    function uploadMod() {
+      const name = document.getElementById("modName").value;
+      const image = document.getElementById("modImage").value;
+      const link = document.getElementById("modLink").value;
 
+      if (name && image && link) {
+        mods.push({ name, image, link });
+        localStorage.setItem("mods", JSON.stringify(mods));
+        alert("تم نشر المود بنجاح ✅");
+        document.getElementById("uploadForm").style.display = "none";
+        loadMods();
+      } else {
+        alert("من فضلك املأ كل الخانات 🔺");
+      }
+    }
+
+    loadMods();
   </script>
+
 </body>
 </html>
