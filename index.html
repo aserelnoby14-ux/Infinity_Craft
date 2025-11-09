@@ -1,144 +1,159 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infinity Craft - مودات ماينكرافت</title>
-<style>
-  body { font-family:'Cairo',sans-serif; background:#fff; color:#222; text-align:center; margin:0; padding:0; }
-  header { background:#8e24aa; color:white; padding:15px; font-size:24px; font-weight:bold; }
-  .mods { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:12px; padding:15px; }
-  .mod { border:2px solid #4CAF50; border-radius:10px; padding:10px; background:#f9f9f9; transition:0.3s; }
-  .mod:hover { transform:scale(1.02); }
-  .mod img { width:100%; border-radius:10px; }
-  button { background:#4CAF50; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; margin:5px; }
-  button:hover { background:#45a049; }
-  #uploadForm { display:none; background:#f2f2f2; padding:15px; border-radius:10px; margin:10px; }
-  input, textarea { width:90%; margin:5px; padding:8px; border-radius:6px; border:1px solid #ccc; }
-  a { color:#8e24aa; text-decoration:none; font-weight:bold; }
-  #searchBox { width:80%; padding:8px; margin:10px auto; border:2px solid #4CAF50; border-radius:8px; font-size:16px; }
-</style>
+  <title>مودات Infinity Craft</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .btn {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #3e8e41;
+    }
+    .mod-list {
+      margin-top: 40px;
+    }
+    .mod-item {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>مودات Infinity Craft</h1>
+    <form id="mod-form">
+      <div class="form-group">
+        <label for="mod-name">اسم المود</label>
+        <input type="text" id="mod-name" name="mod-name">
+      </div>
+      <div class="form-group">
+        <label for="mod-desc">وصف المود</label>
+        <textarea id="mod-desc" name="mod-desc"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="mod-image">رابط صورة المود</label>
+        <input type="text" id="mod-image" name="mod-image">
+      </div>
+      <div class="form-group">
+        <label for="mod-link">رابط المود</label>
+        <input type="text" id="mod-link" name="mod-link">
+      </div>
+      <div class="form-group">
+        <label for="mod-category">الفئة</label>
+        <select id="mod-category" name="mod-category">
+          <option value="ألعاب">ألعاب</option>
+          <option value="تعديلات">تعديلات</option>
+          <option value="أدوات">أدوات</option>
+        </select>
+      </div>
+      <button class="btn" type="submit">نشر المود</button>
+    </form>
+    <input type="text" id="search-input" placeholder="بحث">
+    <button id="search-btn">بحث</button>
+    <select id="category-select">
+      <option value="">اختر الفئة</option>
+      <option value="ألعاب">ألعاب</option>
+      <option value="تعديلات">تعديلات</option>
+      <option value="أدوات">أدوات</option>
+    </select>
+    <button id="category-btn">عرض الفئة</button>
+    <div class="mod-list" id="mod-list">
+      <!-- المودات ستظهر هنا -->
+    </div>
+  </div>
 
-<header>Infinity Craft 🧱</header>
+  <script>
+    const modForm = document.getElementById('mod-form');
+    const modList = document.getElementById('mod-list');
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+    const categorySelect = document.getElementById('category-select');
+    const categoryBtn = document.getElementById('category-btn');
 
-<!-- روابط -->
-<button onclick="toggleUpload()">📤 انشر مودك</button>
-<a href="https://t.me/+qq_iB3QRLpJjMGFk">📢 قناة التليجرام</a>
+    let mods = [];
 
-<!-- مربع البحث -->
-<input type="text" id="searchBox" placeholder="🔍 ابحث عن مود..." oninput="searchMods()">
+    modForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const modName = document.getElementById('mod-name').value;
+      const modDesc = document.getElementById('mod-desc').value;
+      const modImage = document.getElementById('mod-image').value;
+      const modLink = document.getElementById('mod-link').value;
+      const modCategory = document.getElementById('mod-category').value;
 
-<!-- نموذج رفع مود -->
-<div id="uploadForm">
-  <h3>نشر مود جديد</h3>
-  <input id="modName" placeholder="اسم المود"><br>
-  <input id="modDesc" placeholder="وصف المود"><br>
-  <input id="modImg" placeholder="رابط صورة المود"><br>
-  <input id="modLink" placeholder="رابط تحميل المود (MediaFire مثلاً)"><br>
-  <input id="modOwner" placeholder="اسمك (عشان تقدر تحذف المود بعدين)"><br>
-  <button onclick="uploadMod()">✅ نشر المود</button>
-</div>
+      const mod = {
+        name: modName,
+        description: modDesc,
+        image: modImage,
+        link: modLink,
+        category: modCategory
+      };
 
-<h2>🧩 كل المودات</h2>
-<div class="mods" id="modsContainer"></div>
+      mods.push(mod);
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+      renderMods(mods);
 
-<script>
-  // إعداد Firebase (بدل المفاتيح دي بمفاتيح مشروعك)
-  const firebaseConfig = {
-    apiKey: "AIzaSyA5f-XXXXX-XXXXXX-XXXXXX",
-    authDomain: "infinity-craft.firebaseapp.com",
-    databaseURL: "https://infinity-craft-default-rtdb.firebaseio.com",
-    projectId: "infinity-craft",
-    storageBucket: "infinity-craft.appspot.com",
-    messagingSenderId: "1234567890",
-    appId: "1:1234567890:web:abcd1234"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+      // هنا يمكنك إضافة الكود لإرسال البيانات إلى قاعدة البيانات
+    });
 
-  const modsContainer = document.getElementById('modsContainer');
-  const searchBox = document.getElementById('searchBox');
-  const uploadForm = document.getElementById('uploadForm');
-  let currentUser = "";
+    searchBtn.addEventListener('click', () => {
+      const searchQuery = searchInput.value;
+      const filteredMods = mods.filter((mod) => mod.name.includes(searchQuery));
+      renderMods(filteredMods);
+    });
 
-  function toggleUpload() {
-    uploadForm.style.display = uploadForm.style.display === 'none' ? 'block' : 'none';
-  }
+    categoryBtn.addEventListener('click', () => {
+      const category = categorySelect.value;
+      const filteredMods = mods.filter((mod) => mod.category === category);
+      renderMods(filteredMods);
+    });
 
-  function uploadMod() {
-    const name = document.getElementById('modName').value.trim();
-    const desc = document.getElementById('modDesc').value.trim();
-    const img = document.getElementById('modImg').value.trim();
-    const link = document.getElementById('modLink').value.trim();
-    const owner = document.getElementById('modOwner').value.trim();
-
-    if (!name || !desc || !img || !link || !owner) {
-      alert("املأ كل الخانات!");
-      return;
-    }
-
-    currentUser = owner;
-
-    const newMod = { name, desc, img, link, owner };
-    const modKey = db.ref().child('mods').push().key;
-    db.ref('mods/' + modKey).set(newMod);
-
-    alert("✅ تم نشر المود!");
-    document.getElementById('modName').value = '';
-    document.getElementById('modDesc').value = '';
-    document.getElementById('modImg').value = '';
-    document.getElementById('modLink').value = '';
-    document.getElementById('modOwner').value = '';
-  }
-
-  function deleteMod(key, owner) {
-    const user = prompt("🧍‍♂️ اكتب اسمك لحذف المود:");
-    if (user === owner) {
-      db.ref('mods/' + key).remove();
-      alert("🗑️ تم حذف المود بنجاح!");
-    } else {
-      alert("❌ لا يمكنك حذف مود شخص آخر!");
-    }
-  }
-
-  function loadMods() {
-    db.ref('mods').on('value', snapshot => {
-      modsContainer.innerHTML = '';
-      const mods = snapshot.val();
-      if (!mods) return;
-      Object.entries(mods).reverse().forEach(([key, mod]) => {
-        const div = document.createElement('div');
-        div.className = 'mod';
-        div.innerHTML = `
-          <h3>${mod.name}</h3>
-          <img src="${mod.img}" alt="صورة المود">
-          <p>${mod.desc}</p>
-          <a href="${mod.link}" target="_blank"><button>⬇️ تحميل المود</button></a>
-          <p><b>الناشر:</b> ${mod.owner}</p>
-          <button onclick="deleteMod('${key}', '${mod.owner}')">🗑️ حذف المود</button>
+    function renderMods(mods) {
+      modList.innerHTML = '';
+      mods.forEach((mod) => {
+        const modItem = document.createElement('div');
+        modItem.classList.add('mod-item');
+        modItem.innerHTML = `
+          <h2>${mod.name}</h2>
+          <p>${mod.description}</p>
+          <img src="${mod.image}" alt="${mod.name}">
+          <a href="${mod.link}">تحميل المود</a>
         `;
-        modsContainer.appendChild(div);
+        modList.appendChild(modItem);
       });
-    });
-  }
-
-  function searchMods() {
-    const term = searchBox.value.toLowerCase();
-    const mods = document.querySelectorAll('.mod');
-    mods.forEach(mod => {
-      const text = mod.textContent.toLowerCase();
-      mod.style.display = text.includes(term) ? 'block' : 'none';
-    });
-  }
-
-  loadMods();
-</script>
-
+    }
+  </script>
 </body>
 </html>
