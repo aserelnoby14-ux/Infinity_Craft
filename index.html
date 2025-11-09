@@ -1,66 +1,116 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infinity Craft - المودات</title>
-  <style>
-    body {
-      background: #fff;
-      font-family: "Cairo", sans-serif;
-      text-align: center;
-    }
-    header {
-      background: red;
-      color: white;
-      padding: 15px;
-      font-size: 24px;
-    }
-    .form-box {
-      background: #f4f4f4;
-      padding: 20px;
-      margin: 20px auto;
-      width: 90%;
-      max-width: 400px;
-      border-radius: 15px;
-      box-shadow: 0 0 10px #ccc;
-    }
-    input, textarea {
-      width: 90%;
-      margin: 10px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    button {
-      background: green;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .mod-card {
-      border: 2px solid #ccc;
-      border-radius: 15px;
-      padding: 15px;
-      margin: 10px;
-      background: #e9ffe9;
-      max-width: 400px;
-      display: inline-block;
-      vertical-align: top;
-    }
-    .mod-card img {
-      width: 100%;
-      border-radius: 10px;
-    }
-  </style>
-  <script type="module">
-    // ✅ إعداد Firebase الجاهز بالكامل
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Infinity_Craft - مودات الموبايل</title>
+<style>
+  :root{--red:#D32F2F;--green:#4CAF50;--muted:#666;}
+  body{margin:0;font-family: "Cairo", sans-serif;background:#fff;color:#111;direction:rtl}
+  header{background:var(--red);color:#fff;padding:14px 12px;text-align:center;font-weight:800}
+  .container{max-width:980px;margin:14px auto;padding:12px}
+  .top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .controls{display:flex;gap:8px;align-items:center}
+  .btn{background:var(--green);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+  .btn.secondary{background:transparent;color:var(--red);border:2px solid var(--red)}
+  .search{padding:8px;border-radius:8px;border:1px solid #ddd}
+  .filters{display:flex;gap:8px;align-items:center}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
+  .card{background:#f7fff7;border-radius:12px;padding:10px;box-shadow:0 2px 6px rgba(0,0,0,.06);display:flex;flex-direction:column}
+  .thumb{height:160px;border-radius:8px;overflow:hidden;margin-bottom:8px;background:#e0e0e0;display:flex;align-items:center;justify-content:center}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .title{font-weight:800;font-size:16px;margin-bottom:6px}
+  .desc{color:var(--muted);font-size:13px;min-height:40px}
+  .meta{display:flex;gap:8px;align-items:center;margin-top:8px;justify-content:space-between}
+  .download{background:var(--red);color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none;font-weight:700}
+  .delete{background:#c62828;color:#fff;padding:6px 10px;border-radius:8px;border:none;cursor:pointer}
+  .form{margin-top:16px;background:#f2f2f2;padding:12px;border-radius:10px}
+  .form input[type="text"], .form textarea, .form select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
+  .small{font-size:13px;color:var(--muted)}
+  footer{margin-top:20px;padding:18px;text-align:center;color:#444}
+  a.tg{color:var(--red);font-weight:800;text-decoration:none}
+  @media(max-width:560px){.top{flex-direction:column;align-items:stretch}.controls{justify-content:space-between}}
+</style>
+</head>
+<body>
+  <header>Infinity_Craft - مودات الموبايل</header>
 
+  <div class="container">
+    <div class="top">
+      <div class="controls">
+        <input id="search" class="search" placeholder="ابحث باسم المود أو الوصف..." />
+        <div class="filters">
+          <select id="categoryFilter" style="padding:8px;border-radius:8px;border:1px solid #ddd">
+            <option value="">كل الفئات</option>
+            <option value="أسلحة">أسلحة</option>
+            <option value="أدوات">أدوات</option>
+            <option value="إضافات">إضافات</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button id="openFormBtn" class="btn">📤 انشر مودك</button>
+        <button id="refreshBtn" class="btn secondary">تحديث</button>
+      </div>
+    </div>
+
+    <!-- فورم الإضافة -->
+    <div id="formWrap" class="form" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong>نشر مود جديد</strong>
+        <button id="closeForm" class="btn secondary" style="padding:6px 8px">إغلاق</button>
+      </div>
+
+      <div style="margin-top:8px" class="small">اسمك (سيظهر كمالك للمود)</div>
+      <input id="ownerName" type="text" placeholder="اسمك" />
+
+      <div class="small">اسم المود</div>
+      <input id="name" type="text" placeholder="اسم المود" />
+
+      <div class="small">وصف قصير</div>
+      <textarea id="desc" rows="3" placeholder="وصف المود"></textarea>
+
+      <div class="small">الفئة</div>
+      <select id="category">
+        <option value="إضافات">إضافات</option>
+        <option value="أسلحة">أسلحة</option>
+        <option value="أدوات">أدوات</option>
+      </select>
+
+      <div class="small" style="margin-top:6px">صورة المود (اختياري — رفع من جهازك)</div>
+      <input id="imageFile" type="file" accept="image/*" />
+
+      <div class="small">أو رابط صورة (مثلاً من imgbb)</div>
+      <input id="imageUrl" type="text" placeholder="رابط الصورة (اختياري)" />
+
+      <div class="small">رابط التحميل (مهم)</div>
+      <input id="downloadLink" type="text" placeholder="رابط التحميل (مثال: mediafire link)" />
+
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button id="publishBtn" class="btn">نشر المود</button>
+        <button id="clearBtn" class="btn secondary">مسح الحقول</button>
+      </div>
+      <div id="formMsg" class="small" style="margin-top:8px;color:var(--muted)"></div>
+    </div>
+
+    <div id="modsGrid" class="grid" aria-live="polite"></div>
+
+    <div id="empty" style="text-align:center;color:var(--muted);margin-top:18px;display:none">لا يوجد مودات حاليا</div>
+
+    <footer>
+      رابط قناة التليجرام:
+      <a class="tg" href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">https://t.me/+qq_iB3QRLpJjMGFk</a>
+    </footer>
+  </div>
+
+  <!-- Firebase (module) + منتهي الجاهزية -->
+  <script type="module">
+    /**********************************************
+     * هذا الملف مُعَد كأنه Firebase مفعل ومهيأ.
+     * يحتوي config جاهز (مش مطالب تعمل أي خطوة).
+     * لو عندك config حقيقي استبدله بالموجود هنا.
+     **********************************************/
     const firebaseConfig = {
       apiKey: "AIzaSyDRA4Ff3cUI_6EMk8HgmAQm0FyHuJp-4Eo",
       authDomain: "infinity-craft-demo.firebaseapp.com",
@@ -69,73 +119,198 @@
       messagingSenderId: "718392884900",
       appId: "1:718392884900:web:1b7c93e3082c4ab9cc1342"
     };
+    /**************************************************************************/
 
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    import { getStorage, ref as sref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+
+    // init
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
-    // 🔰 نشر مود جديد
-    async function publishMod() {
-      const name = document.getElementById("name").value;
-      const description = document.getElementById("description").value;
-      const imageUrl = document.getElementById("imageUrl").value;
-      const downloadLink = document.getElementById("downloadLink").value;
+    // DOM
+    const openFormBtn = document.getElementById('openFormBtn');
+    const formWrap = document.getElementById('formWrap');
+    const closeForm = document.getElementById('closeForm');
+    const publishBtn = document.getElementById('publishBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const formMsg = document.getElementById('formMsg');
+    const imageFileInput = document.getElementById('imageFile');
+    const modsGrid = document.getElementById('modsGrid');
+    const empty = document.getElementById('empty');
+    const searchInput = document.getElementById('search');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const refreshBtn = document.getElementById('refreshBtn');
 
-      if (!name || !description || !imageUrl || !downloadLink) {
-        alert("من فضلك املأ كل الخانات!");
-        return;
-      }
+    let currentUser = null;
+    let lastSnapshot = []; // cache last snapshot for filtering
+
+    // anonymous sign-in
+    signInAnonymously(auth).catch(err => console.error('Auth error', err));
+    onAuthStateChanged(auth, user => { currentUser = user; });
+
+    // UI handlers
+    openFormBtn.addEventListener('click', ()=> {
+      formWrap.style.display = 'block';
+      window.scrollTo({top:0,behavior:'smooth'});
+      const saved = localStorage.getItem('ic_ownerName') || '';
+      document.getElementById('ownerName').value = saved;
+    });
+    closeForm.addEventListener('click', ()=> formWrap.style.display = 'none');
+    clearBtn.addEventListener('click', ()=> {
+      document.getElementById('name').value='';
+      document.getElementById('desc').value='';
+      document.getElementById('imageUrl').value='';
+      document.getElementById('downloadLink').value='';
+      imageFileInput.value = '';
+      formMsg.textContent = '';
+    });
+
+    // publish
+    publishBtn.addEventListener('click', async ()=> {
+      const ownerName = document.getElementById('ownerName').value.trim();
+      const name = document.getElementById('name').value.trim();
+      const desc = document.getElementById('desc').value.trim();
+      const category = document.getElementById('category').value;
+      const imageUrlField = document.getElementById('imageUrl').value.trim();
+      const downloadLink = document.getElementById('downloadLink').value.trim();
+      const file = imageFileInput.files[0];
+
+      if (!ownerName) { formMsg.textContent = 'اكتب اسمك عشان نعرف صاحب المود'; return; }
+      if (!name || !desc || !downloadLink) { formMsg.textContent = 'املأ الاسم والوصف ورابط التحميل'; return; }
+
+      localStorage.setItem('ic_ownerName', ownerName);
+      formMsg.textContent = 'جاري رفع المود... انتظر لحظة';
 
       try {
+        let finalImageUrl = '';
+
+        if (file) {
+          const path = `mods_images/${Date.now()}_${file.name}`;
+          const storageRef = sref(storage, path);
+          await uploadBytes(storageRef, file);
+          finalImageUrl = await getDownloadURL(storageRef);
+        } else if (imageUrlField) {
+          finalImageUrl = imageUrlField;
+        }
+
         await addDoc(collection(db, "mods"), {
           name,
-          description,
-          imageUrl,
-          downloadLink
+          description: desc,
+          imageUrl: finalImageUrl,
+          downloadLink,
+          category,
+          ownerUid: currentUser ? currentUser.uid : null,
+          ownerName: ownerName,
+          createdAt: serverTimestamp()
         });
-        alert("✅ تم نشر المود بنجاح!");
-        loadMods();
-      } catch (e) {
-        alert("❌ حصل خطأ أثناء النشر");
+
+        formMsg.textContent = '✅ تم نشر المود!';
+        document.getElementById('name').value='';
+        document.getElementById('desc').value='';
+        document.getElementById('imageUrl').value='';
+        document.getElementById('downloadLink').value='';
+        imageFileInput.value = '';
+        setTimeout(()=>{ formWrap.style.display='none'; formMsg.textContent=''; }, 800);
+      } catch (err) {
+        console.error(err);
+        formMsg.textContent = '❌ حصل خطأ أثناء النشر';
+      }
+    });
+
+    // delete
+    async function deleteMod(docId, ownerUid) {
+      if (!currentUser) { alert('خطأ: غير مُسجل'); return; }
+      if (currentUser.uid !== ownerUid) { alert('مش صلاحيتك تحذف هذا المود'); return; }
+      if (!confirm('هل أنت متأكد أنك تريد حذف هذا المود؟')) return;
+      try {
+        await deleteDoc(doc(db, 'mods', docId));
+      } catch (err) {
+        console.error(err);
+        alert('حصل خطأ أثناء الحذف');
       }
     }
 
-    // 🔰 تحميل المودات من Firebase
-    async function loadMods() {
-      const modsContainer = document.getElementById("mods");
-      modsContainer.innerHTML = "";
-      const querySnapshot = await getDocs(collection(db, "mods"));
-      querySnapshot.forEach((doc) => {
-        const mod = doc.data();
-        const card = `
-          <div class="mod-card">
-            <img src="${mod.imageUrl}" alt="${mod.name}">
-            <h3>${mod.name}</h3>
-            <p>${mod.description}</p>
-            <a href="${mod.downloadLink}" target="_blank">
-              <button>تحميل المود</button>
-            </a>
+    // realtime listener
+    const q = query(collection(db, "mods"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+      const docs = [];
+      snapshot.forEach(docSnap => docs.push({ id: docSnap.id, ...docSnap.data() }));
+      lastSnapshot = docs;
+      renderMods(docs);
+    }, err => {
+      console.error('onSnapshot error', err);
+    });
+
+    // render + filter + search
+    function renderMods(allMods) {
+      const search = searchInput.value.trim().toLowerCase();
+      const cat = categoryFilter.value;
+      modsGrid.innerHTML = '';
+      const filtered = allMods.filter(m => {
+        if (cat && m.category !== cat) return false;
+        if (!search) return true;
+        return (m.name && m.name.toLowerCase().includes(search)) ||
+               (m.description && m.description.toLowerCase().includes(search));
+      });
+
+      if (filtered.length === 0) {
+        empty.style.display = 'block';
+      } else {
+        empty.style.display = 'none';
+      }
+
+      filtered.forEach(mod => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="thumb">${mod.imageUrl ? `<img src="${escapeHtml(mod.imageUrl)}" alt="">` : '<div style="padding:10px;color:#555">لا يوجد صورة</div>'}</div>
+          <div class="title">${escapeHtml(mod.name)}</div>
+          <div class="desc">${escapeHtml(mod.description || '')}</div>
+          <div class="meta">
+            <a class="download" href="${escapeHtml(mod.downloadLink)}" target="_blank">🔗 تحميل</a>
+            <div style="font-size:12px;color:var(--muted)">فئة: ${escapeHtml(mod.category || '—')}</div>
+          </div>
+          <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+            <div class="small">بواسطة: ${escapeHtml(mod.ownerName || 'مجهول')}</div>
+            <div id="actions-${mod.id}"></div>
           </div>
         `;
-        modsContainer.innerHTML += card;
+        modsGrid.appendChild(card);
+
+        const actionsDiv = document.getElementById(`actions-${mod.id}`);
+        if (currentUser && mod.ownerUid && currentUser.uid === mod.ownerUid) {
+          const delBtn = document.createElement('button');
+          delBtn.className = 'delete';
+          delBtn.textContent = '🗑 حذف';
+          delBtn.addEventListener('click', ()=> deleteMod(mod.id, mod.ownerUid));
+          actionsDiv.appendChild(delBtn);
+        }
       });
     }
 
-    window.publishMod = publishMod;
-    window.onload = loadMods;
+    // helpers & events
+    function escapeHtml(s){
+      if(!s) return '';
+      return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+    searchInput.addEventListener('input', ()=> renderMods(lastSnapshot));
+    categoryFilter.addEventListener('change', ()=> renderMods(lastSnapshot));
+    refreshBtn.addEventListener('click', ()=> renderMods(lastSnapshot));
+
+    // done
   </script>
-</head>
-<body>
-  <header>🌍 Infinity Craft</header>
 
-  <div class="form-box">
-    <h2>نشر مود جديد</h2>
-    <input id="name" placeholder="اسم المود">
-    <textarea id="description" placeholder="وصف المود"></textarea>
-    <input id="imageUrl" placeholder="رابط صورة المود (من imgbb)">
-    <input id="downloadLink" placeholder="رابط تحميل المود">
-    <button onclick="publishMod()">نشر</button>
-  </div>
-
-  <div id="mods"></div>
+<!--
+ملاحظة أمنية:
+- الكود أعلاه يعمل مع مشروع تجريبي (config مدموج).
+- لو تستخدمه للاختبار فموافق قواعد Firestore وStorage يجب أن تكون في وضع اختبار مؤقت.
+- بعد ما تتأكد، لازم تُحسن قواعد الأمان (تقييد الكتابة للـ authenticated users أو قواعد دقيقة).
+-->
 </body>
 </html>
