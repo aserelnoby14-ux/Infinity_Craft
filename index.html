@@ -1,172 +1,412 @@
-<!DOCTYPE html>
+د<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infinity_Craft - مودات ماين كرافت</title>
-  <style>
-    body {
-      background-color: #ffffff;
-      font-family: 'Cairo', sans-serif;
-      margin: 0;
-      padding: 0;
-      direction: rtl;
-      text-align: center;
-    }
-    header {
-      background-color: #d32f2f;
-      color: white;
-      padding: 15px;
-      font-size: 26px;
-      font-weight: bold;
-    }
-    .mod-box {
-      border: 2px solid #4CAF50;
-      border-radius: 20px;
-      padding: 15px;
-      margin: 20px auto;
-      background-color: #f7f7f7;
-      max-width: 400px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .mod-box img {
-      width: 100%;
-      border-radius: 12px;
-    }
-    .button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 15px;
-      margin: 5px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .button:hover {
-      background-color: #388E3C;
-    }
-    #addModForm {
-      border: 2px solid #d32f2f;
-      border-radius: 15px;
-      padding: 20px;
-      margin: 20px;
-      background-color: #fff;
-      display: inline-block;
-      max-width: 400px;
-    }
-    input {
-      width: 90%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-    footer {
-      margin: 20px;
-    }
-    footer a {
-      text-decoration: none;
-      color: #d32f2f;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Infinity_Craft - مودات</title>
+<style>
+  :root{--red:#D32F2F;--green:#4CAF50;--muted:#666;}
+  body{margin:0;font-family: "Cairo", sans-serif;background:#fff;color:#111;direction:rtl}
+  header{background:var(--red);color:#fff;padding:14px 12px;text-align:center;font-weight:800}
+  .container{max-width:980px;margin:14px auto;padding:12px}
+  .top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .controls{display:flex;gap:8px;align-items:center}
+  .btn{background:var(--green);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+  .btn.secondary{background:transparent;color:var(--red);border:2px solid var(--red)}
+  .search{padding:8px;border-radius:8px;border:1px solid #ddd}
+  .filters{display:flex;gap:8px;align-items:center}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
+  .card{background:#f7fff7;border-radius:12px;padding:10px;box-shadow:0 2px 6px rgba(0,0,0,.06);display:flex;flex-direction:column}
+  .thumb{height:160px;border-radius:8px;overflow:hidden;margin-bottom:8px;background:#e0e0e0;display:flex;align-items:center;justify-content:center}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .title{font-weight:800;font-size:16px;margin-bottom:6px}
+  .desc{color:var(--muted);font-size:13px;min-height:40px}
+  .meta{display:flex;gap:8px;align-items:center;margin-top:8px;justify-content:space-between}
+  .download{background:var(--red);color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none;font-weight:700}
+  .delete{background:#c62828;color:#fff;padding:6px 10px;border-radius:8px;border:none;cursor:pointer}
+  .form{margin-top:16px;background:#f2f2f2;padding:12px;border-radius:10px}
+  .form input[type="text"], .form textarea, .form select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
+  .small{font-size:13px;color:var(--muted)}
+  footer{margin-top:20px;padding:18px;text-align:center;color:#444}
+  a.tg{color:var(--red);font-weight:800;text-decoration:none}
+  @media(max-width:560px){.top{flex-direction:column;align-items:stretch}.controls{justify-content:space-between}}
+</style>
 </head>
 <body>
-  <header>Infinity_Craft 🔥</header>
+  <header>Infinity_Craft - مودات الموبايل</header>
 
-  <div id="addModForm">
-    <h3>انشر مودك</h3>
-    <input type="text" id="modName" placeholder="اسم المود">
-    <input type="text" id="modImage" placeholder="رابط صورة المود (من موقع رفع)">
-    <input type="text" id="modLink" placeholder="رابط تحميل المود">
-    <input type="password" id="modPassword" placeholder="كلمة مرور (علشان تقدر تحذف المود بعدين)">
-    <button class="button" onclick="addMod()">نشر المود</button>
+  <div class="container">
+    <div class="top">
+      <div class="controls">
+        <input id="search" class="search" placeholder="ابحث باسم المود أو الوصف..." />
+        <div class="filters">
+          <select id="categoryFilter" style="padding:8px;border-radius:8px;border:1px solid #ddd">
+            <option value="">كل الفئات</option>
+            <option value="أسلحة">أسلحة</option>
+            <option value="أدوات">أدوات</option>
+            <option value="إضافات">إضافات</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button id="openFormBtn" class="btn">📤 انشر مودك</button>
+        <button id="refreshBtn" class="btn secondary">تحديث</button>
+      </div>
+    </div>
+
+    <!-- فورم الإضافة -->
+    <div id="formWrap" class="form" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <strong>نشر مود جديد</strong>
+        <button id="closeForm" class="btn secondary" style="padding:6px 8px">إغلاق</button>
+      </div>
+
+      <div style="margin-top:8px" class="small">اسمك (سيظهر كمالك للمود)</div>
+      <input id="ownerName" type="text" placeholder="اسمك" />
+
+      <div class="small">اسم المود</div>
+      <input id="name" type="text" placeholder="اسم المود" />
+
+      <div class="small">وصف قصير</div>
+      <textarea id="desc" rows="3" placeholder="وصف المود"></textarea>
+
+      <div class="small">الفئة</div>
+      <select id="category">
+        <option value="إضافات">إضافات</option>
+        <option value="أسلحة">أسلحة</option>
+        <option value="أدوات">أدوات</option>
+      </select>
+
+      <div class="small" style="margin-top:6px">صورة المود (اختياري — رفع من جهازك)</div>
+      <input id="imageFile" type="file" accept="image/*" />
+
+      <div class="small">أو رابط صورة (مثلاً من imgbb)</div>
+      <input id="imageUrl" type="text" placeholder="رابط الصورة (اختياري)" />
+
+      <div class="small">رابط التحميل (مهم)</div>
+      <input id="downloadLink" type="text" placeholder="رابط التحميل (مثال: mediafire link)" />
+
+      <div class="small">كلمة سر لحذف المود لاحقاً (اكتب حاجة تحفظها)</div>
+      <input id="deletePass" type="text" placeholder="كلمة سر حذف (اختياري لكن لو حطيتها تضمن ملكيتك)" />
+
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button id="publishBtn" class="btn">نشر المود</button>
+        <button id="clearBtn" class="btn secondary">مسح الحقول</button>
+      </div>
+      <div id="formMsg" class="small" style="margin-top:8px;color:var(--muted)"></div>
+    </div>
+
+    <div id="modsGrid" class="grid" aria-live="polite"></div>
+
+    <div id="empty" style="text-align:center;color:var(--muted);margin-top:18px;display:none">لا يوجد مودات حاليا</div>
+
+    <footer>
+      رابط قناة التليجرام:
+      <a class="tg" href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">https://t.me/+qq_iB3QRLpJjMGFk</a>
+    </footer>
   </div>
 
-  <div id="modsContainer"></div>
+<script>
+/*
+  هذا السكربت يضمن:
+  - نشر المود يعمل فورياً ويظهر في الواجهة
+  - البحث و الفلاتر تعمل
+  - الحذف محمي بكلمة سر ادخلها صاحب المود وقت النشر
+  - حفظ محلي في localStorage بحيث تشتغل الصفحة بدون Firebase
+  - خيار (اختياري) لربط Firebase إلكترونياً لو تريد لاحقاً
+*/
 
-  <footer>
-    <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">قناة التليجرام الرسمية 🔗</a>
-  </footer>
+// ---------- Local fallback storage ----------
+const LOCAL_KEY = 'ic_mods_v2';
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+// load from localStorage
+function loadLocalMods(){
+  const j = localStorage.getItem(LOCAL_KEY);
+  if(!j) return [];
+  try { return JSON.parse(j); } catch(e){ return []; }
+}
+function saveLocalMods(arr){
+  localStorage.setItem(LOCAL_KEY, JSON.stringify(arr));
+}
 
-    // إعداد Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyDemoKey",
-      authDomain: "infinity-craft-demo.firebaseapp.com",
-      databaseURL: "https://infinity-craft-demo-default-rtdb.firebaseio.com",
-      projectId: "infinity-craft-demo",
-      storageBucket: "infinity-craft-demo.appspot.com",
-      messagingSenderId: "999999999999",
-      appId: "1:999999999999:web:abcdef123456"
+// ---------- in-memory mods array (source of truth for UI) ----------
+let mods = loadLocalMods(); // [{id, name, description, imageUrl, downloadLink, category, ownerName, deletePass, createdAt}]
+
+// helper id
+function uid(){ return 'm_'+Math.random().toString(36).slice(2,9); }
+
+// render
+const modsGrid = document.getElementById('modsGrid');
+const empty = document.getElementById('empty');
+function renderMods(){
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const cat = document.getElementById('categoryFilter').value;
+  modsGrid.innerHTML = '';
+  const filtered = mods.filter(m=>{
+    if(cat && m.category !== cat) return false;
+    if(!q) return true;
+    return (m.name && m.name.toLowerCase().includes(q)) || (m.description && m.description.toLowerCase().includes(q));
+  });
+  if(filtered.length === 0) empty.style.display = 'block'; else empty.style.display = 'none';
+  filtered.forEach(mod => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="thumb">${mod.imageUrl ? `<img src="${escapeHtml(mod.imageUrl)}" alt="">` : '<div style="padding:10px;color:#555">لا يوجد صورة</div>'}</div>
+      <div class="title">${escapeHtml(mod.name)}</div>
+      <div class="desc">${escapeHtml(mod.description || '')}</div>
+      <div class="meta">
+        <a class="download" href="${escapeHtml(mod.downloadLink)}" target="_blank">🔗 تحميل</a>
+        <div style="font-size:12px;color:var(--muted)">فئة: ${escapeHtml(mod.category || '—')}</div>
+      </div>
+      <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+        <div class="small">بواسطة: ${escapeHtml(mod.ownerName || 'مجهول')}</div>
+        <div id="actions-${mod.id}"></div>
+      </div>
+    `;
+    modsGrid.appendChild(card);
+
+    const actionsDiv = document.getElementById(`actions-${mod.id}`);
+    // زر حذف يظهر لكل واحد لكن يطلب الباسورد الصحيح
+    const delBtn = document.createElement('button');
+    delBtn.className = 'delete';
+    delBtn.textContent = '🗑 حذف';
+    delBtn.onclick = ()=> {
+      const entered = prompt('اكتب كلمة المرور لحذف هذا المود (التي وضعها صاحب المود):');
+      if(entered === null) return;
+      if(mod.deletePass && mod.deletePass === entered){
+        // حذف محلي
+        mods = mods.filter(x=>x.id !== mod.id);
+        saveLocalMods(mods);
+        renderMods();
+        alert('تم حذف المود');
+        // (اختياري) لو مربط Firebase هنا يمكن حذف من الDB أيضاً
+      } else {
+        alert('كلمة المرور خاطئة أو المود ليس له كلمة مرور.');
+      }
     };
+    actionsDiv.appendChild(delBtn);
+  });
+}
+
+// escape
+function escapeHtml(s){ if(!s) return ''; return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+// ---------- Form logic ----------
+const openFormBtn = document.getElementById('openFormBtn');
+const formWrap = document.getElementById('formWrap');
+const closeForm = document.getElementById('closeForm');
+const publishBtn = document.getElementById('publishBtn');
+const clearBtn = document.getElementById('clearBtn');
+const formMsg = document.getElementById('formMsg');
+const imageFileInput = document.getElementById('imageFile');
+
+openFormBtn.addEventListener('click', ()=> {
+  formWrap.style.display = 'block';
+  const saved = localStorage.getItem('ic_ownerName') || '';
+  document.getElementById('ownerName').value = saved;
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+closeForm.addEventListener('click', ()=> formWrap.style.display = 'none');
+clearBtn.addEventListener('click', ()=>{
+  document.getElementById('name').value='';
+  document.getElementById('desc').value='';
+  document.getElementById('imageUrl').value='';
+  document.getElementById('downloadLink').value='';
+  document.getElementById('deletePass').value='';
+  imageFileInput.value = '';
+  formMsg.textContent = '';
+});
+
+// helper: read file as DataURL
+function readFileAsDataURL(file){
+  return new Promise((res,rej)=>{
+    const fr = new FileReader();
+    fr.onload = ()=> res(fr.result);
+    fr.onerror = ()=> rej('file error');
+    fr.readAsDataURL(file);
+  });
+}
+
+publishBtn.addEventListener('click', async ()=> {
+  const ownerName = document.getElementById('ownerName').value.trim();
+  const name = document.getElementById('name').value.trim();
+  const desc = document.getElementById('desc').value.trim();
+  const category = document.getElementById('category').value;
+  const imageUrlField = document.getElementById('imageUrl').value.trim();
+  const downloadLink = document.getElementById('downloadLink').value.trim();
+  const deletePass = document.getElementById('deletePass').value.trim();
+  const file = imageFileInput.files[0];
+
+  if(!ownerName){ formMsg.textContent = 'اكتب اسمك عشان نسجل صاحب المود'; return; }
+  if(!name || !desc || !downloadLink){ formMsg.textContent = 'املأ الاسم والوصف ورابط التحميل'; return; }
+
+  formMsg.textContent = '⏳ جارٍ إضافة المود...';
+  localStorage.setItem('ic_ownerName', ownerName);
+
+  try{
+    let finalImage = '';
+    if(file){
+      // read local file as data url (works offline; image stored in localStorage)
+      finalImage = await readFileAsDataURL(file);
+    } else if(imageUrlField){
+      finalImage = imageUrlField;
+    } else {
+      finalImage = '';
+    }
+
+    const newMod = {
+      id: uid(),
+      name,
+      description: desc,
+      imageUrl: finalImage,
+      downloadLink,
+      category,
+      ownerName,
+      deletePass: deletePass || null,
+      createdAt: Date.now()
+    };
+
+    // add local
+    mods.unshift(newMod); // newest first
+    saveLocalMods(mods);
+    renderMods();
+    formMsg.textContent = '✅ تم النشر محلياً!';
+
+    // clear fields (but keep ownerName)
+    document.getElementById('name').value='';
+    document.getElementById('desc').value='';
+    document.getElementById('imageUrl').value='';
+    document.getElementById('downloadLink').value='';
+    document.getElementById('deletePass').value='';
+    imageFileInput.value = '';
+
+    // Optional: try to push to Firebase if configured (see Firebase section below)
+    try { if(window._tryFirebasePublish) await window._tryFirebasePublish(newMod); } catch(e){ console.warn('Firebase publish failed', e); }
+
+  } catch(err){
+    console.error(err);
+    formMsg.textContent = '❌ حدث خطأ أثناء النشر';
+  }
+});
+
+// search & filter listeners
+document.getElementById('search').addEventListener('input', ()=> renderMods());
+document.getElementById('categoryFilter').addEventListener('change', ()=> renderMods());
+document.getElementById('refreshBtn').addEventListener('click', ()=> renderMods());
+
+// initial render
+renderMods();
+
+/* ================= optional Firebase integration =================
+ If later you want real-time shared between all users, replace
+ the firebaseConfig below with your project config and uncomment
+ the code. The local fallback still works if Firebase not set.
+
+ Steps:
+  - Create Firebase project
+  - Enable Firestore or Realtime DB & Storage if needed
+  - Replace firebaseConfig.apiKey !== 'YOUR_API_KEY' to real value
+  - The script below will attempt to push newMod to Firestore and listen for remote changes
+  - For simplicity here we provide a basic Firestore example
+=================================================================*/
+
+(async function tryInitFirebase(){
+  // put your firebase config here if you want remote sync; leave as default to use local-only.
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY", // <-- لو مش بدّلتها يبقى local-only
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID"
+  };
+
+  if(!firebaseConfig.apiKey || firebaseConfig.apiKey === 'YOUR_API_KEY') {
+    // not configured -> skip firebase init
+    return;
+  }
+
+  try{
+    // load firebase modules dynamically
+    const [{ initializeApp }, { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc }, { getStorage, ref: sRef, uploadBytes, getDownloadURL }] =
+      await Promise.all([
+        import('https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js'),
+        import('https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js'),
+        import('https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js')
+      ]);
 
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const modsRef = ref(db, "mods");
+    const db = getFirestore(app);
+    const modsCol = collection(db, 'mods');
+    const q = query(modsCol, orderBy('createdAt', 'desc'));
 
-    // إضافة مود جديد
-    window.addMod = function () {
-      const name = document.getElementById("modName").value.trim();
-      const img = document.getElementById("modImage").value.trim();
-      const link = document.getElementById("modLink").value.trim();
-      const pass = document.getElementById("modPassword").value.trim();
-
-      if (!name || !img || !link || !pass) {
-        alert("من فضلك املأ كل الخانات.");
-        return;
-      }
-
-      push(modsRef, { name, img, link, pass });
-      document.getElementById("modName").value = "";
-      document.getElementById("modImage").value = "";
-      document.getElementById("modLink").value = "";
-      document.getElementById("modPassword").value = "";
-    };
-
-    // عرض المودات + إمكانية الحذف
-    onValue(modsRef, (snapshot) => {
-      const modsContainer = document.getElementById("modsContainer");
-      modsContainer.innerHTML = "";
-
-      snapshot.forEach((child) => {
-        const mod = child.val();
-        const modId = child.key;
-
-        const modBox = document.createElement("div");
-        modBox.classList.add("mod-box");
-        modBox.innerHTML = `
-          <h3>${mod.name}</h3>
-          <img src="${mod.img}" alt="صورة المود">
-          <a href="${mod.link}" target="_blank"><button class="button">تحميل المود</button></a>
-          <button class="button" style="background-color:#d32f2f" onclick="deleteMod('${modId}')">🗑️ حذف المود</button>
-        `;
-
-        modsContainer.appendChild(modBox);
+    // listen remote -> replace local list with remote OR merge (we'll merge to avoid overwriting local-only)
+    onSnapshot(q, snapshot => {
+      const remote = [];
+      snapshot.forEach(d => {
+        const dt = d.data();
+        remote.push({
+          id: d.id,
+          name: dt.name,
+          description: dt.description,
+          imageUrl: dt.imageUrl,
+          downloadLink: dt.downloadLink,
+          category: dt.category,
+          ownerName: dt.ownerName,
+          deletePass: dt.deletePass || null,
+          createdAt: dt.createdAt ? dt.createdAt.toMillis ? dt.createdAt.toMillis() : (dt.createdAt) : Date.now()
+        });
       });
+      // merge remote and local (remote first, avoid duplicates by id)
+      const map = {};
+      remote.forEach(r => map[r.id] = r);
+      mods.forEach(l => { if(!map[l.id]) map[l.id] = l; }); // keep local ones not in remote
+      mods = Object.values(map).sort((a,b)=>b.createdAt - a.createdAt);
+      saveLocalMods(mods);
+      renderMods();
     });
 
-    // حذف مود (بإدخال الباسورد)
-    window.deleteMod = function (id) {
-      const enteredPass = prompt("اكتب كلمة المرور لحذف المود:");
-      if (!enteredPass) return;
-
-      const modRef = ref(db, "mods/" + id);
-      onValue(modRef, (snapshot) => {
-        const modData = snapshot.val();
-        if (modData && modData.pass === enteredPass) {
-          remove(modRef);
-          alert("تم حذف المود بنجاح ✅");
-        } else {
-          alert("كلمة المرور غير صحيحة ❌");
-        }
-      }, { onlyOnce: true });
+    // function to publish to firestore (uploads image if DataURL)
+    window._tryFirebasePublish = async function(newMod){
+      // if image is dataURL, upload to storage first
+      let imageToUse = newMod.imageUrl;
+      if(newMod.imageUrl && newMod.imageUrl.startsWith('data:')){
+        // upload
+        const storage = getStorage(app);
+        const blob = dataURLtoBlob(newMod.imageUrl);
+        const filename = 'mods_images/'+Date.now()+'.png';
+        const sref = sRef(storage, filename);
+        await uploadBytes(sref, blob);
+        imageToUse = await getDownloadURL(sref);
+      }
+      // add doc
+      await addDoc(modsCol, {
+        name: newMod.name,
+        description: newMod.description,
+        imageUrl: imageToUse || '',
+        downloadLink: newMod.downloadLink,
+        category: newMod.category,
+        ownerName: newMod.ownerName,
+        deletePass: newMod.deletePass || null,
+        createdAt: Date.now()
+      });
     };
-  </script>
+
+    // helper convert dataURL to blob
+    function dataURLtoBlob(dataurl) {
+      const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]); let n = bstr.length; const u8arr = new Uint8Array(n);
+      while(n--) u8arr[n] = bstr.charCodeAt(n);
+      return new Blob([u8arr], {type:mime});
+    }
+
+  }catch(e){
+    console.warn('Firebase init failed', e);
+  }
+})();
+
+</script>
 </body>
 </html>
