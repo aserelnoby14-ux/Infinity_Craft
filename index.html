@@ -81,29 +81,35 @@
       </div>
       <button class="btn" type="submit">نشر المود</button>
     </form>
-    <input type="text" id="search-input" placeholder="بحث">
-    <button id="search-btn">بحث</button>
-    <select id="category-select">
-      <option value="">اختر الفئة</option>
-      <option value="ألعاب">ألعاب</option>
-      <option value="تعديلات">تعديلات</option>
-      <option value="أدوات">أدوات</option>
-    </select>
-    <button id="category-btn">عرض الفئة</button>
     <div class="mod-list" id="mod-list">
       <!-- المودات ستظهر هنا -->
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https:                                                    
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyAtn8wwDmlWe95RA13kAQiY0XDkhnuKoQ0",
+      authDomain: "infinity-craft-301e4.firebaseapp.com",
+      databaseURL: "https:                                                                       
+      projectId: "infinity-craft-301e4",
+      storageBucket: "infinity-craft-301e4.firebasestorage.app",
+      messagingSenderId: "979672021905",
+      appId: "1:979672021905:web:849ecc0ed6379edb2eb830",
+      measurementId: "G-G188MXB3JY"
+    };
+                          
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
     const modForm = document.getElementById('mod-form');
     const modList = document.getElementById('mod-list');
-    const searchInput = document.getElementById('search-input');
-    const searchBtn = document.getElementById('search-btn');
-    const categorySelect = document.getElementById('category-select');
-    const categoryBtn = document.getElementById('category-btn');
-
-    let mods = [];
 
     modForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -113,47 +119,33 @@
       const modLink = document.getElementById('mod-link').value;
       const modCategory = document.getElementById('mod-category').value;
 
-      const mod = {
+      const newModRef = ref(db, 'mods/' + Date.now());
+      const newMod = {
         name: modName,
         description: modDesc,
         image: modImage,
         link: modLink,
         category: modCategory
       };
-
-      mods.push(mod);
-
-      renderMods(mods);
-
-      // هنا يمكنك إضافة الكود لإرسال البيانات إلى قاعدة البيانات
+      set(newModRef, newMod);
     });
 
-    searchBtn.addEventListener('click', () => {
-      const searchQuery = searchInput.value;
-      const filteredMods = mods.filter((mod) => mod.name.includes(searchQuery));
-      renderMods(filteredMods);
-    });
-
-    categoryBtn.addEventListener('click', () => {
-      const category = categorySelect.value;
-      const filteredMods = mods.filter((mod) => mod.category === category);
-      renderMods(filteredMods);
-    });
-
-    function renderMods(mods) {
+    const modsRef = ref(db, 'mods');
+    onValue(modsRef, (snapshot) => {
+      const mods = snapshot.val();
       modList.innerHTML = '';
-      mods.forEach((mod) => {
+      for (const mod in mods) {
         const modItem = document.createElement('div');
         modItem.classList.add('mod-item');
         modItem.innerHTML = `
-          <h2>${mod.name}</h2>
-          <p>${mod.description}</p>
-          <img src="${mod.image}" alt="${mod.name}">
-          <a href="${mod.link}">تحميل المود</a>
+          <h2>${mods[mod].name}</h2>
+          <p>${mods[mod].description}</p>
+          <img src="${mods[mod].image}" alt="${mods[mod].name}">
+          <a href="${mods[mod].link}">تحميل المود</a>
         `;
         modList.appendChild(modItem);
-      });
-    }
+      }
+    });
   </script>
 </body>
 </html>
