@@ -105,7 +105,7 @@
     uploadForm.style.display = 'none';
   }
 
-  // حذف مود
+  // حذف مود مرتبط بـ Firebase
   window.deleteMod = function(key) {
     if(confirm("⚠️ هل تريد حذف هذا المود؟")) {
       remove(ref(db, 'mods/' + key))
@@ -126,7 +126,7 @@
       }
       Object.keys(data).reverse().forEach(key => {
         const mod = data[key];
-        mod.key = key;
+        mod.key = key; // حفظ المفتاح
         const div = document.createElement('div');
         div.className = 'mod';
         div.innerHTML = `
