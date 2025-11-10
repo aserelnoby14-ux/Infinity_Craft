@@ -7,12 +7,15 @@
 <style>
   body { font-family:'Cairo',sans-serif; background:#fff; color:#222; text-align:center; margin:0; padding:0; }
   header { background:#d62828; color:white; padding:15px; font-size:22px; }
+  .info { background:#f0f0f0; padding:10px; font-size:14px; color:#222; }
   .mods { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:10px; padding:10px; }
-  .mod { border:2px solid #4CAF50; border-radius:10px; padding:10px; background:#f9f9f9; transition:0.3s; }
+  .mod { border:2px solid #4CAF50; border-radius:10px; padding:10px; background:#f9f9f9; transition:0.3s; position:relative; }
   .mod:hover { transform:scale(1.03); }
   .mod img { width:100%; border-radius:10px; }
   button { background:#4CAF50; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; margin:5px; }
   button:hover { background:#45a049; }
+  .deleteBtn { background:#d62828 !important; }
+  .deleteBtn:hover { background:#a00000 !important; }
   #uploadForm { display:none; background:#f2f2f2; padding:15px; border-radius:10px; margin:10px; }
   input, textarea { width:90%; margin:5px; padding:8px; border-radius:6px; border:1px solid #ccc; }
   a { color:#d62828; text-decoration:none; margin:10px; display:inline-block; }
@@ -22,6 +25,11 @@
 <body>
 
 <header>Infinity Craft 🌍</header>
+
+<!-- معلومات المطور والمالك فوق الصفحة -->
+<div class="info">
+  المطور: <b>Asernoby23</b> | مالك الكروب: <b>Kraivx09</b>
+</div>
 
 <!-- أزرار -->
 <button onclick="toggleUpload()">📤 انشر مودك</button>
@@ -45,12 +53,10 @@
 
 <!-- Firebase SDK -->
 <script type="module">
-  // استيراد مكتبات Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+  import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
 
-  // إعداد Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyAtn8wwDmlWe95RA13kAQiY0XDkhnuKoQ0",
     authDomain: "infinity-craft-301e4.firebaseapp.com",
@@ -62,7 +68,6 @@
     measurementId: "G-G188MXB3JY"
   };
 
-  // تشغيل Firebase
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const analytics = getAnalytics(app);
@@ -100,6 +105,15 @@
     uploadForm.style.display = 'none';
   }
 
+  // حذف مود
+  window.deleteMod = function(key) {
+    if(confirm("⚠️ هل تريد حذف هذا المود؟")) {
+      remove(ref(db, 'mods/' + key))
+        .then(() => alert("✅ تم حذف المود!"))
+        .catch(err => alert("❌ حدث خطأ: " + err));
+    }
+  }
+
   // تحميل المودات من قاعدة البيانات
   function loadMods() {
     const modsRef = ref(db, "mods");
@@ -110,8 +124,9 @@
         modsContainer.innerHTML = "<p>🚫 لا يوجد مودات حتى الآن.</p>";
         return;
       }
-      const mods = Object.values(data).reverse();
-      mods.forEach(mod => {
+      Object.keys(data).reverse().forEach(key => {
+        const mod = data[key];
+        mod.key = key;
         const div = document.createElement('div');
         div.className = 'mod';
         div.innerHTML = `
@@ -119,6 +134,7 @@
           <img src="${mod.img}" alt="${mod.name}">
           <p>${mod.desc}</p>
           <a href="${mod.link}" target="_blank"><button>⬇️ تحميل المود</button></a>
+          <button class="deleteBtn" onclick="deleteMod('${mod.key}')">🗑️ حذف المود</button>
         `;
         modsContainer.appendChild(div);
       });
@@ -135,7 +151,6 @@
     });
   }
 
-  // تحميل المودات عند فتح الصفحة
   loadMods();
 </script>
 
