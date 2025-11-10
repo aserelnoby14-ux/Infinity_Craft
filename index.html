@@ -1,56 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infinity Craft - مودات ماينكرافت</title>
-<style>
-  body { font-family:'Cairo',sans-serif; background:#fff; color:#222; text-align:center; margin:0; padding:0; }
-  header { background:#d62828; color:white; padding:15px; font-size:22px; }
-  .mods { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:10px; padding:10px; }
-  .mod { border:2px solid #4CAF50; border-radius:10px; padding:10px; background:#f9f9f9; transition:0.3s; }
-  .mod:hover { transform:scale(1.03); }
-  .mod img { width:100%; border-radius:10px; }
-  button { background:#4CAF50; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; margin:5px; }
-  button:hover { background:#45a049; }
-  #uploadForm { display:none; background:#f2f2f2; padding:15px; border-radius:10px; margin:10px; }
-  input, textarea { width:90%; margin:5px; padding:8px; border-radius:6px; border:1px solid #ccc; }
-  a { color:#d62828; text-decoration:none; margin:10px; display:inline-block; }
-  #searchBox { width:80%; padding:8px; margin:10px auto; border:2px solid #4CAF50; border-radius:8px; font-size:16px; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Infinity_Craft - مودات</title>
+  <style>
+    body{font-family:Tahoma,Arial;background:#fff;margin:0;padding:0;color:#222}
+    header{background:#c62828;color:#fff;padding:14px 16px;text-align:center;font-size:22px}
+    .container{max-width:760px;margin:18px auto;padding:0 12px}
+    .top-row{display:flex;gap:12px;align-items:center;justify-content:center;margin-bottom:12px}
+    .btn{padding:10px 18px;border-radius:8px;border:0;cursor:pointer}
+    .btn.green{background:#2e7d32;color:#fff}
+    .btn.red{background:#d32f2f;color:#fff}
+    .search{width:100%;padding:12px;border:3px solid #32a852;border-radius:10px;margin:6px 0;font-size:16px}
+    .card{border:2px solid #e0e0e0;border-radius:14px;padding:18px;margin:14px 0;background:#fafafa}
+    form .input{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;margin:8px 0;font-size:15px}
+    .mods-grid{display:block}
+    .mod-item{border:3px solid #c8e6c9;border-radius:12px;padding:14px;margin:12px 0;background:#fff}
+    .mod-item img{max-width:100%;height:auto;border-radius:8px;margin-top:8px}
+    .small{font-size:14px;color:#666}
+    .actions{margin-top:10px}
+    .delete-btn{background:#d32f2f;color:#fff;border-radius:8px;padding:8px 12px;border:0}
+    .download-btn{background:#2e7d32;color:#fff;border-radius:8px;padding:8px 12px;border:0}
+    footer{margin:30px 0;text-align:center;color:#777}
+    .brand{font-weight:bold}
+  </style>
 </head>
 <body>
 
 <header>Infinity Craft 🌍</header>
+<div class="container">
 
-<!-- أزرار -->
-<button onclick="toggleUpload()">📤 انشر مودك</button>
-<a href="https://t.me/+qq_iB3QRLpJjMGFk">📢 قناة التليجرام</a>
+  <div style="text-align:center;margin-bottom:8px">
+    المطور: <span class="brand">Asernoby23</span> &nbsp; المالك: <span class="brand">kraivx09</span>
+  </div>
 
-<!-- مربع البحث -->
-<input type="text" id="searchBox" placeholder="🔍 ابحث عن مود..." oninput="searchMods()">
+  <!-- top: Telegram link + (we will hide publish in app if you want) -->
+  <div class="top-row">
+    <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank" class="btn" style="background:transparent;color:#c62828;border:2px solid #c62828;border-radius:8px">قناة التليجرام</a>
+    <!-- زرار النشر في الموقع (لو عايز تشيله من التطبيق بس اتركه هنا) -->
+    <button id="showPublish" class="btn green">انشر مودك ⬆️</button>
+  </div>
 
-<!-- نموذج نشر المود -->
-<div id="uploadForm">
-  <h3>نشر مود جديد</h3>
-  <input id="modName" placeholder="اسم المود"><br>
-  <input id="modDesc" placeholder="وصف المود"><br>
-  <input id="modImg" placeholder="رابط صورة المود"><br>
-  <input id="modLink" placeholder="رابط تحميل المود (MediaFire مثلاً)"><br>
-  <button onclick="uploadMod()">✅ نشر</button>
+  <!-- search -->
+  <input id="searchInput" class="search" placeholder="ابحث عن مود..." />
+
+  <!-- Publish form (مخفي افتراضياً) -->
+  <div id="publishCard" class="card" style="display:none">
+    <h3 style="margin:0 0 8px 0;text-align:center">نشر مود جديد</h3>
+    <input id="authorName" class="input" placeholder="اسمك (هيظهر كصاحب المود)" value="" />
+    <input id="modName" class="input" placeholder="اسم المود" />
+    <textarea id="modDesc" class="input" placeholder="وصف المود" rows="3"></textarea>
+    <input id="downloadLink" class="input" placeholder="رابط التحميل (direct link)" />
+    <input id="imageUrl" class="input" placeholder="رابط الصورة المباشر (direct image link)" />
+    <div style="text-align:center">
+      <button id="publishBtn" class="btn green">🚀 نشر المود</button>
+      <button id="hidePublish" class="btn" style="background:#eee;margin-right:8px">إغلاق</button>
+    </div>
+    <div id="publishMsg" style="margin-top:8px;color:#d32f2f"></div>
+  </div>
+
+  <h2 style="text-align:center;margin-top:12px">كل المودات 🧩</h2>
+
+  <div id="modsList" class="mods-grid">
+    <!-- populated by JS -->
+  </div>
+
+  <footer>
+    تابعنا على تليجرام: <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">Infinity Craft</a>
+  </footer>
 </div>
 
-<h2>🧩 كل المودات</h2>
-<div class="mods" id="modsContainer"></div>
-
-<!-- Firebase SDK -->
+<!-- Firebase v9 modular (from CDN) -->
 <script type="module">
-  // استيراد مكتبات Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-  import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
-
-  // إعداد Firebase
+  // Firebase libs
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  // your config (you gave this earlier)
   const firebaseConfig = {
     apiKey: "AIzaSyAtn8wwDmlWe95RA13kAQiY0XDkhnuKoQ0",
     authDomain: "infinity-craft-301e4.firebaseapp.com",
@@ -61,82 +87,115 @@
     appId: "1:979672021905:web:849ecc0ed6379edb2eb830",
     measurementId: "G-G188MXB3JY"
   };
-
-  // تشغيل Firebase
   const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const analytics = getAnalytics(app);
+  const db = getFirestore(app);
 
-  const modsContainer = document.getElementById('modsContainer');
-  const uploadForm = document.getElementById('uploadForm');
-  const searchBox = document.getElementById('searchBox');
+  // UI elements
+  const showPublish = document.getElementById('showPublish');
+  const publishCard = document.getElementById('publishCard');
+  const hidePublish = document.getElementById('hidePublish');
+  const publishBtn = document.getElementById('publishBtn');
+  const publishMsg = document.getElementById('publishMsg');
+  const modsList = document.getElementById('modsList');
+  const searchInput = document.getElementById('searchInput');
 
-  // عرض أو إخفاء نموذج النشر
-  window.toggleUpload = function() {
-    uploadForm.style.display = uploadForm.style.display === 'none' ? 'block' : 'none';
-  }
+  // Fields
+  const authorName = document.getElementById('authorName');
+  const modName = document.getElementById('modName');
+  const modDesc = document.getElementById('modDesc');
+  const downloadLink = document.getElementById('downloadLink');
+  const imageUrl = document.getElementById('imageUrl');
 
-  // رفع مود جديد
-  window.uploadMod = function() {
-    const name = document.getElementById('modName').value.trim();
-    const desc = document.getElementById('modDesc').value.trim();
-    const img = document.getElementById('modImg').value.trim();
-    const link = document.getElementById('modLink').value.trim();
+  // show/hide
+  showPublish.addEventListener('click', ()=> { publishCard.style.display='block'; publishMsg.textContent=''; });
+  hidePublish.addEventListener('click', ()=> { publishCard.style.display='none'; });
 
-    if (!name || !desc || !img || !link) {
-      alert("⚠️ من فضلك املأ كل الخانات!");
-      return;
-    }
+  // publish function
+  publishBtn.addEventListener('click', async ()=>{
+    publishMsg.textContent='';
+    const author = (authorName.value || 'مجهول').trim();
+    const name = modName.value.trim();
+    const desc = modDesc.value.trim();
+    const dl = downloadLink.value.trim();
+    const img = imageUrl.value.trim();
 
-    const modsRef = ref(db, "mods");
-    const newMod = push(modsRef);
-    set(newMod, { name, desc, img, link });
-
-    alert("✅ تم نشر المود بنجاح!");
-    document.getElementById('modName').value = '';
-    document.getElementById('modDesc').value = '';
-    document.getElementById('modImg').value = '';
-    document.getElementById('modLink').value = '';
-    uploadForm.style.display = 'none';
-  }
-
-  // تحميل المودات من قاعدة البيانات
-  function loadMods() {
-    const modsRef = ref(db, "mods");
-    onValue(modsRef, snapshot => {
-      modsContainer.innerHTML = '';
-      const data = snapshot.val();
-      if (!data) {
-        modsContainer.innerHTML = "<p>🚫 لا يوجد مودات حتى الآن.</p>";
-        return;
-      }
-      const mods = Object.values(data).reverse();
-      mods.forEach(mod => {
-        const div = document.createElement('div');
-        div.className = 'mod';
-        div.innerHTML = `
-          <h3>${mod.name}</h3>
-          <img src="${mod.img}" alt="${mod.name}">
-          <p>${mod.desc}</p>
-          <a href="${mod.link}" target="_blank"><button>⬇️ تحميل المود</button></a>
-        `;
-        modsContainer.appendChild(div);
+    if(!name || !dl){ publishMsg.textContent='مطلوب: اسم المود ورابط التحميل.'; return; }
+    try{
+      await addDoc(collection(db,'mods'), {
+        name, description: desc, downloadLink: dl, imageUrl: img,
+        author, createdAt: new Date().toISOString()
       });
+      // success
+      modName.value=''; modDesc.value=''; downloadLink.value=''; imageUrl.value='';
+      publishMsg.style.color='green';
+      publishMsg.textContent='تم النشر بنجاح ✅';
+      // keep form open if user wants to publish more
+    } catch(e){
+      publishMsg.style.color='red';
+      publishMsg.textContent='خطأ في النشر: '+e.message;
+    }
+  });
+
+  // realtime listener: show all mods (ordered by createdAt desc)
+  const q = query(collection(db,'mods'), orderBy('createdAt','desc'));
+  onSnapshot(q, (snapshot)=>{
+    const docs = [];
+    snapshot.forEach(d => docs.push({id:d.id, ...d.data()}));
+    renderMods(docs);
+  });
+
+  // render with search and delete-per-owner (simple client-side owner check)
+  function renderMods(list){
+    const term = (searchInput.value || '').trim().toLowerCase();
+    modsList.innerHTML = '';
+    const viewerName = localStorage.getItem('viewerName') || ''; // current "you" name for delete check
+    list.filter(mod => {
+      if(!term) return true;
+      return (mod.name||'').toLowerCase().includes(term) || (mod.description||'').toLowerCase().includes(term) || (mod.author||'').toLowerCase().includes(term);
+    }).forEach(mod => {
+      const el = document.createElement('div');
+      el.className = 'mod-item';
+      el.innerHTML = `
+        <h3 style="margin:0">${escapeHtml(mod.name||'بدون اسم')}</h3>
+        <div class="small">بواسطة: ${escapeHtml(mod.author||'مجهول')}</div>
+        ${mod.imageUrl ? `<img src="${escapeHtml(mod.imageUrl)}" alt="${escapeHtml(mod.name)}" onerror="this.style.display='none'">` : ''}
+        <p style="margin:8px 0">${escapeHtml(mod.description||'')}</p>
+        <div class="actions">
+          <a class="download-btn" href="${escapeHtml(mod.downloadLink||'#')}" target="_blank">تحميل المود ⬇️</a>
+          ${ (viewerName && viewerName === (mod.author||'')) ? ` <button class="delete-btn" data-id="${mod.id}">حذف</button>` : '' }
+        </div>
+      `;
+      modsList.appendChild(el);
+    });
+
+    // attach delete handlers
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.onclick = async () => {
+        const id = btn.getAttribute('data-id');
+        if(!confirm('متأكد تحذف المود ده؟')) return;
+        try{
+          await deleteDoc(doc(db,'mods',id));
+          alert('تم الحذف');
+        } catch(e){
+          alert('خطأ: '+e.message);
+        }
+      };
     });
   }
 
-  // البحث عن مود
-  window.searchMods = function() {
-    const term = searchBox.value.toLowerCase();
-    const mods = document.querySelectorAll('.mod');
-    mods.forEach(mod => {
-      const title = mod.querySelector('h3').textContent.toLowerCase();
-      mod.style.display = title.includes(term) ? 'block' : 'none';
-    });
-  }
+  // simple search realtime
+  searchInput.addEventListener('input', ()=>{ /* onSnapshot will re-render if list changes */});
 
-  // تحميل المودات عند فتح الصفحة
-  loadMods();
+  // helper: basic escaping
+  function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+  // store viewer name so delete button shows only if viewer uses same name
+  authorName.addEventListener('change', ()=>{ localStorage.setItem('viewerName', authorName.value.trim()); });
+  // initialize viewerName from localStorage if exists
+  if(localStorage.getItem('viewerName')) authorName.value = localStorage.getItem('viewerName');
+
+  // optional: hide publishBtn on mobile app version — you said app should not show publish button.
+  // If you want site-only publish and app to hide, add logic on app side to remove element or set CSS.
 </script>
 
 </body>
