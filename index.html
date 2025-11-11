@@ -5,15 +5,12 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      margin: 0;
-      padding: 0;
     }
     .container {
       max-width: 800px;
       margin: 40px auto;
       padding: 20px;
-      background-color: #fff;
+      background-color: #f9f9f9;
       border: 1px solid #ddd;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -52,21 +49,11 @@
       border-radius: 10px;
       margin-bottom: 20px;
     }
-    .header {
-      background-color: #333;
-      color: #fff;
-      padding: 20px;
-      text-align: center;
-    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>مودات Infinity Craft</h1>
-    <p>المطور: Asernoby23</p>
-    <p>مالك الجروب: Kraivx</p>
-  </div>
   <div class="container">
+    <h1>مودات Infinity Craft</h1>
     <form id="mod-form">
       <div class="form-group">
         <label for="mod-name">اسم المود</label>
@@ -94,8 +81,6 @@
       </div>
       <button class="btn" type="submit">نشر المود</button>
     </form>
-    <input type="text" id="search-input" placeholder="بحث">
-    <button id="search-btn">بحث</button>
     <div class="mod-list" id="mod-list">
       <!-- المودات ستظهر هنا -->
     </div>
@@ -104,7 +89,7 @@
   <script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https:                                                    
-    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
     // Your web app's Firebase configuration
@@ -125,40 +110,6 @@
 
     const modForm = document.getElementById('mod-form');
     const modList = document.getElementById('mod-list');
-    const searchInput = document.getElementById('search-input');
-    const searchBtn = document.getElementById('search-btn');
-
-    function updateModList() {
-      const modsRef = ref(db, 'mods');
-      onValue(modsRef, (snapshot) => {
-        const mods = snapshot.val();
-        modList.innerHTML = '';
-        for (const mod in mods) {
-          const modItem = document.createElement('div');
-          modItem.classList.add('mod-item');
-          modItem.innerHTML = `
-            <h2>${mods[mod].name}</h2>
-            <p>${mods[mod].description}</p>
-            <img src="${mods[mod].image}" alt="${mods[mod].name}">
-            <a href="${mods[mod].link}">تحميل المود</a>
-            <button class="delete-btn" data-mod="${mod}">حذف</button>
-          `;
-          modList.appendChild(modItem);
-        }
-
-        const deleteBtns = document.querySelectorAll('.delete-btn');
-        deleteBtns.forEach((btn) => {
-          btn.addEventListener('click', (e) => {
-            const modRef = ref(db, 'mods/' + e.target.dataset.mod);
-            remove(modRef).then(() => {
-              console.log('تم حذف المود');
-            }).catch((error) => {
-              console.error('خطأ في حذف المود:', error);
-            });
-          });
-        });
-      });
-    }
 
     modForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -176,34 +127,24 @@
         link: modLink,
         category: modCategory
       };
-      set(newModRef, newMod).then(() => {
-        updateModList();
-      });
+      set(newModRef, newMod);
     });
 
-    updateModList();
-
-    searchBtn.addEventListener('click', () => {
-      const searchQuery = searchInput.value;
-      const modsRef = ref(db, 'mods');
-      onValue(modsRef, (snapshot) => {
-        const mods = snapshot.val();
-        modList.innerHTML = '';
-        for (const mod in mods) {
-          if (mods[mod].name.includes(searchQuery)) {
-            const modItem = document.createElement('div');
-            modItem.classList.add('mod-item');
-            modItem.innerHTML = `
-              <h2>${mods[mod].name}</h2>
-              <p>${mods[mod].description}</p>
-              <img src="${mods[mod].image}" alt="${mods[mod].name}">
-              <a href="${mods[mod].link}">تحميل المود</a>
-              <button class="delete-btn" data-mod="${mod}">حذف</button>
-            `;
-            modList.appendChild(modItem);
-          }
-        }
-      });
+    const modsRef = ref(db, 'mods');
+    onValue(modsRef, (snapshot) => {
+      const mods = snapshot.val();
+      modList.innerHTML = '';
+      for (const mod in mods) {
+        const modItem = document.createElement('div');
+        modItem.classList.add('mod-item');
+        modItem.innerHTML = `
+          <h2>${mods[mod].name}</h2>
+          <p>${mods[mod].description}</p>
+          <img src="${mods[mod].image}" alt="${mods[mod].name}">
+          <a href="${mods[mod].link}">تحميل المود</a>
+        `;
+        modList.appendChild(modItem);
+      }
     });
   </script>
 </body>
