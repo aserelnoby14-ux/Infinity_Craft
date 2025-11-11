@@ -1,16 +1,61 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html dir="rtl" lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Infinity Craft</title>
+  <style>
+    body {
+      background-color: white;
+      font-family: "Cairo", sans-serif;
+      text-align: center;
+      margin: 0;
+    }
+    header {
+      background-color: red;
+      color: white;
+      padding: 15px;
+      font-size: 25px;
+      font-weight: bold;
+    }
+    .mod-box {
+      border: 2px solid green;
+      border-radius: 20px;
+      margin: 15px;
+      padding: 10px;
+      background: #f8fff8;
+    }
+    .mod-box img {
+      width: 90%;
+      border-radius: 10px;
+    }
+    button {
+      background-color: green;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 5px;
+    }
+    button:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <header>🌍 Infinity Craft</header>
+  <h3>📢 قناة التليجرام: <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank" style="color: white;">اضغط هنا</a></h3>
+  <h4>المطور: Asernoby23 | المالك: Kraivx09</h4>
 
+  <div id="mods-container"></div>
+
+  <!-- Firebase -->
   <script type="module">
-    // استيراد مكتبات Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // إعداد Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAtn8wwDmlWe95RA13kAQiY0XDkhnuKoQ0",
       authDomain: "infinity-craft-301e4.firebaseapp.com",
@@ -25,215 +70,39 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // توليد ID لكل مستخدم
-    const userId = localStorage.getItem('userId') || crypto.randomUUID();
-    localStorage.setItem('userId', userId);
+    const modsContainer = document.getElementById("mods-container");
+    const modsRef = ref(db, "mods");
 
-    // نشر مود
-    window.publishMod = function() {
-      const modName = document.getElementById('modName').value.trim();
-      const modDesc = document.getElementById('modDesc').value.trim();
-      const modLink = document.getElementById('modLink').value.trim();
-      const modImage = document.getElementById('modImage').value.trim();
+    onValue(modsRef, (snapshot) => {
+      modsContainer.innerHTML = "";
+      snapshot.forEach((child) => {
+        const mod = child.val();
+        const modId = child.key;
 
-      if (!modName || !modDesc || !modLink || !modImage) {
-        alert("من فضلك املأ كل البيانات!");
-        return;
-      }
-
-      push(ref(db, 'mods'), {
-        name: modName,
-        desc: modDesc,
-        link: modLink,
-        image: modImage,
-        owner: userId
+        const modBox = document.createElement("div");
+        modBox.classList.add("mod-box");
+        modBox.innerHTML = `
+          <h2>${mod.name}</h2>
+          <img src="${mod.image}" alt="${mod.name}">
+          <p>${mod.description}</p>
+          <a href="${mod.link}" target="_blank"><button>⬇️ تحميل المود</button></a>
+          <button class="delete-btn" data-id="${modId}">🗑️ حذف المود</button>
+        `;
+        modsContainer.appendChild(modBox);
       });
 
-      document.getElementById('modName').value = "";
-      document.getElementById('modDesc').value = "";
-      document.getElementById('modLink').value = "";
-      document.getElementById('modImage').value = "";
-    }
-
-    // عرض المودات
-    const modsContainer = document.getElementById("mods");
-
-    function displayMods(filter = "") {
-      onValue(ref(db, 'mods'), (snapshot) => {
-        modsContainer.innerHTML = "";
-        snapshot.forEach(child => {
-          const data = child.val();
-          const key = child.key;
-          const isOwner = data.owner === userId;
-
-          // فلترة حسب البحث
-          if (filter && !data.name.toLowerCase().includes(filter.toLowerCase())) return;
-
-          const card = document.createElement("div");
-          card.className = "mod-card";
-          card.innerHTML = `
-            <img src="${data.image}" alt="${data.name}">
-            <h3>${data.name}</h3>
-            <p>${data.desc}</p>
-            <a href="${data.link}" target="_blank" class="download">تحميل المود</a>
-            ${isOwner ? `<button class="delete-btn" onclick="deleteMod('${key}')">حذف المود</button>` : ""}
-          `;
-          modsContainer.appendChild(card);
+      document.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          const modId = e.target.getAttribute("data-id");
+          const modRef = ref(db, `mods/${modId}`);
+          if (confirm("هل أنت متأكد إنك عايز تحذف المود؟")) {
+            remove(modRef)
+              .then(() => alert("تم حذف المود بنجاح ✅"))
+              .catch(() => alert("حدث خطأ أثناء الحذف ❌"));
+          }
         });
       });
-    }
-
-    displayMods();
-
-    // زر الحذف
-    window.deleteMod = function(key) {
-      remove(ref(db, 'mods/' + key));
-    }
-
-    // بحث عن المودات
-    window.searchMods = function() {
-      const term = document.getElementById("search").value;
-      displayMods(term);
-    }
+    });
   </script>
-
-  <style>
-    body {
-      background-color: #fff;
-      font-family: "Cairo", sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
-    }
-    header {
-      background-color: #ff0000;
-      color: white;
-      padding: 15px;
-      font-size: 24px;
-      font-weight: bold;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    .info {
-      background: #f3f3f3;
-      padding: 10px;
-      margin: 10px;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-    form {
-      margin: 15px;
-    }
-    input, textarea {
-      width: 90%;
-      padding: 10px;
-      margin: 5px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 16px;
-    }
-    button {
-      background: #007bff;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      margin-top: 5px;
-      font-size: 16px;
-    }
-    .search-bar {
-      margin: 10px auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-    }
-    .search-bar input {
-      width: 70%;
-      border: 1px solid #aaa;
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 16px;
-    }
-    .search-bar button {
-      background-color: green;
-    }
-    .mod-card {
-      border: 2px solid #ddd;
-      margin: 10px auto;
-      padding: 10px;
-      border-radius: 15px;
-      width: 90%;
-      max-width: 400px;
-      background-color: #f9f9f9;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
-    }
-    .mod-card img {
-      width: 100%;
-      border-radius: 10px;
-      height: auto;
-    }
-    .download {
-      display: inline-block;
-      margin-top: 10px;
-      background: green;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-    }
-    .delete-btn {
-      background: crimson;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      margin-top: 8px;
-      cursor: pointer;
-    }
-    footer {
-      background: #222;
-      color: white;
-      padding: 10px;
-      margin-top: 20px;
-    }
-    footer a {
-      color: #00ff88;
-      text-decoration: none;
-    }
-  </style>
-</head>
-
-<body>
-  <header>Infinity Craft</header>
-
-  <div class="info">
-    <p><b>المطور:</b> Asernoby23</p>
-    <p><b>المالك:</b> kraivx09</p>
-  </div>
-
-  <form>
-    <input type="text" id="modName" placeholder="اسم المود">
-    <textarea id="modDesc" placeholder="وصف المود"></textarea>
-    <input type="text" id="modLink" placeholder="رابط التحميل">
-    <input type="text" id="modImage" placeholder="رابط الصورة">
-    <button type="button" onclick="publishMod()">نشر المود</button>
-  </form>
-
-  <div class="search-bar">
-    <input type="text" id="search" placeholder="ابحث عن مود...">
-    <button onclick="searchMods()">بحث</button>
-  </div>
-
-  <h2>المودات المنشورة</h2>
-  <div id="mods"></div>
-
-  <footer>
-    <p>قناتنا على التليجرام: <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">اضغط هنا</a></p>
-  </footer>
 </body>
 </html>
