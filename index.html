@@ -26,6 +26,8 @@
 <!-- أزرار -->
 <button onclick="toggleUpload()">📤 انشر مودك</button>
 <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">📢 قناة التليجرام</a>
+<button id="loginBtn">🔑 تسجيل دخول</button>
+<span id="userName"></span>
 
 <!-- مربع البحث -->
 <input type="text" id="searchBox" placeholder="🔍 ابحث عن مود..." oninput="searchMods()">
@@ -45,12 +47,11 @@
 
 <!-- Firebase SDK -->
 <script type="module">
-  // استيراد مكتبات Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
-  // إعداد Firebase من البيانات اللي انت بعتهالي
   const firebaseConfig = {
     apiKey: "AIzaSyAtn8wwDmlWe95RA13kAQiY0XDkhnuKoQ0",
     authDomain: "infinity-craft-301e4.firebaseapp.com",
@@ -62,22 +63,39 @@
     measurementId: "G-G188MXB3JY"
   };
 
-  // تشغيل Firebase
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const analytics = getAnalytics(app);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
   const modsContainer = document.getElementById('modsContainer');
   const uploadForm = document.getElementById('uploadForm');
   const searchBox = document.getElementById('searchBox');
+  const loginBtn = document.getElementById('loginBtn');
+  const userName = document.getElementById('userName');
+
+  // تسجيل دخول
+  loginBtn.addEventListener('click', () => {
+    signInWithPopup(auth, provider)
+      .then(result => {
+        const user = result.user;
+        userName.textContent = `مرحباً ${user.displayName}`;
+        loginBtn.style.display = 'none';
+      })
+      .catch(() => alert('❌ حدث خطأ أثناء تسجيل الدخول.'));
+  });
 
   // عرض أو إخفاء نموذج النشر
   window.toggleUpload = function() {
     uploadForm.style.display = uploadForm.style.display === 'none' ? 'block' : 'none';
   }
 
-  // رفع مود جديد 🔥
+  // رفع مود جديد 🔥 مع UID صاحب المود
   window.uploadMod = function() {
+    const user = auth.currentUser;
+    if (!user) { alert("⚠️ يجب تسجيل الدخول أولاً!"); return; }
+
     const name = document.getElementById('modName').value.trim();
     const desc = document.getElementById('modDesc').value.trim();
     const img = document.getElementById('modImg').value.trim();
@@ -90,7 +108,7 @@
 
     const modsRef = ref(db, "mods");
     const newMod = push(modsRef);
-    set(newMod, { name, desc, img, link })
+    set(newMod, { name, desc, img, link, owner: user.uid })
       .then(() => {
         alert("✅ تم نشر المود بنجاح!");
         document.getElementById('modName').value = '';
@@ -102,7 +120,7 @@
       .catch(() => alert("❌ حدث خطأ أثناء النشر!"));
   }
 
-  // تحميل المودات مع زرار حذف 🗑️
+  // تحميل المودات مع زرار حذف مؤمن 🗑️
   function loadMods() {
     const modsRef = ref(db, "mods");
     onValue(modsRef, snapshot => {
@@ -122,12 +140,19 @@
           <img src="${mod.img}" alt="${mod.name}">
           <p>${mod.desc}</p>
           <a href="${mod.link}" target="_blank"><button>⬇️ تحميل المود</button></a>
-          <button class="deleteBtn" data-id="${id}">🗑️ حذف المود</button>
+          <button class="deleteBtn" data-id="${id}" style="display:none;">🗑️ حذف المود</button>
         `;
         modsContainer.appendChild(div);
+
+        // عرض زر الحذف لو المستخدم هو صاحب المود
+        onAuthStateChanged(auth, user => {
+          if (user && mod.owner === user.uid) {
+            div.querySelector('.deleteBtn').style.display = 'inline-block';
+          }
+        });
       });
 
-      // ربط أزرار الحذف بقاعدة البيانات
+      // ربط الحذف
       document.querySelectorAll('.deleteBtn').forEach(btn => {
         btn.addEventListener('click', e => {
           const modId = e.target.getAttribute('data-id');
