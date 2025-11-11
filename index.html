@@ -52,11 +52,21 @@
       border-radius: 10px;
       margin-bottom: 20px;
     }
+    .header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="header">
     <h1>مودات Infinity Craft</h1>
+    <p>المطور: Asernoby23</p>
+    <p>مالك الجروب: Kraivx</p>
+  </div>
+  <div class="container">
     <form id="mod-form">
       <div class="form-group">
         <label for="mod-name">اسم المود</label>
@@ -118,6 +128,38 @@
     const searchInput = document.getElementById('search-input');
     const searchBtn = document.getElementById('search-btn');
 
+    function updateModList() {
+      const modsRef = ref(db, 'mods');
+      onValue(modsRef, (snapshot) => {
+        const mods = snapshot.val();
+        modList.innerHTML = '';
+        for (const mod in mods) {
+          const modItem = document.createElement('div');
+          modItem.classList.add('mod-item');
+          modItem.innerHTML = `
+            <h2>${mods[mod].name}</h2>
+            <p>${mods[mod].description}</p>
+            <img src="${mods[mod].image}" alt="${mods[mod].name}">
+            <a href="${mods[mod].link}">تحميل المود</a>
+            <button class="delete-btn" data-mod="${mod}">حذف</button>
+          `;
+          modList.appendChild(modItem);
+        }
+
+        const deleteBtns = document.querySelectorAll('.delete-btn');
+        deleteBtns.forEach((btn) => {
+          btn.addEventListener('click', (e) => {
+            const modRef = ref(db, 'mods/' + e.target.dataset.mod);
+            remove(modRef).then(() => {
+              console.log('تم حذف المود');
+            }).catch((error) => {
+              console.error('خطأ في حذف المود:', error);
+            });
+          });
+        });
+      });
+    }
+
     modForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const modName = document.getElementById('mod-name').value;
@@ -134,38 +176,12 @@
         link: modLink,
         category: modCategory
       };
-      set(newModRef, newMod);
-    });
-
-    const modsRef = ref(db, 'mods');
-    onValue(modsRef, (snapshot) => {
-      const mods = snapshot.val();
-      modList.innerHTML = '';
-      for (const mod in mods) {
-        const modItem = document.createElement('div');
-        modItem.classList.add('mod-item');
-        modItem.innerHTML = `
-          <h2>${mods[mod].name}</h2>
-          <p>${mods[mod].description}</p>
-          <img src="${mods[mod].image}" alt="${mods[mod].name}">
-          <a href="${mods[mod].link}">تحميل المود</a>
-          <button class="delete-btn" data-mod="${mod}">حذف</button>
-        `;
-        modList.appendChild(modItem);
-      }
-
-      const deleteBtns = document.querySelectorAll('.delete-btn');
-      deleteBtns.forEach((btn) => {
-        btn.addEventListener('click', (e) => {
-          const modRef = ref(db, 'mods/' + e.target.dataset.mod);
-          remove(modRef).then(() => {
-            console.log('تم حذف المود');
-          }).catch((error) => {
-            console.error('خطأ في حذف المود:', error);
-          });
-        });
+      set(newModRef, newMod).then(() => {
+        updateModList();
       });
     });
+
+    updateModList();
 
     searchBtn.addEventListener('click', () => {
       const searchQuery = searchInput.value;
