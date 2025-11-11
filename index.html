@@ -50,7 +50,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+  import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAtn8wwDmlWe95RA13kAQiY0XDkhnuKoQ0",
@@ -75,15 +75,28 @@
   const loginBtn = document.getElementById('loginBtn');
   const userName = document.getElementById('userName');
 
-  // تسجيل دخول
+  // تسجيل الدخول عن طريق Google (redirect مناسب للموبايل)
   loginBtn.addEventListener('click', () => {
-    signInWithPopup(auth, provider)
-      .then(result => {
+    signInWithRedirect(auth, provider);
+  });
+
+  // بعد الرجوع من تسجيل الدخول
+  getRedirectResult(auth)
+    .then(result => {
+      if (result && result.user) {
         const user = result.user;
         userName.textContent = `مرحباً ${user.displayName}`;
         loginBtn.style.display = 'none';
-      })
-      .catch(() => alert('❌ حدث خطأ أثناء تسجيل الدخول.'));
+      }
+    })
+    .catch(error => console.log(error));
+
+  // لو المستخدم داخل بالفعل
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      userName.textContent = `مرحباً ${user.displayName}`;
+      loginBtn.style.display = 'none';
+    }
   });
 
   // عرض أو إخفاء نموذج النشر
