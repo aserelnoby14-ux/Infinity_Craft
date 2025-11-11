@@ -1,106 +1,192 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Infinity Craft</title>
+  <title>مودات Infinity Craft</title>
   <style>
     body {
-      background-color: white;
-      font-family: "Cairo", sans-serif;
-      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
       margin: 0;
+      padding: 0;
     }
-    header {
-      background-color: red;
-      color: white;
-      padding: 15px;
-      font-size: 25px;
-      font-weight: bold;
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    .mod-box {
-      border: 2px solid green;
-      border-radius: 20px;
-      margin: 15px;
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
       padding: 10px;
-      background: #f8fff8;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
-    .mod-box img {
-      width: 90%;
-      border-radius: 10px;
-    }
-    button {
-      background-color: green;
-      color: white;
+    .btn {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
       border: none;
-      border-radius: 10px;
-      padding: 10px 15px;
+      border-radius: 5px;
       cursor: pointer;
-      font-size: 16px;
-      margin: 5px;
     }
-    button:hover {
-      opacity: 0.8;
+    .btn:hover {
+      background-color: #3e8e41;
+    }
+    .mod-list {
+      margin-top: 40px;
+    }
+    .mod-item {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <header>🌍 Infinity Craft</header>
-  <h3>📢 قناة التليجرام: <a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank" style="color: white;">اضغط هنا</a></h3>
-  <h4>المطور: Asernoby23 | المالك: Kraivx09</h4>
+  <div class="container">
+    <h1>مودات Infinity Craft</h1>
+    <form id="mod-form">
+      <div class="form-group">
+        <label for="mod-name">اسم المود</label>
+        <input type="text" id="mod-name" name="mod-name">
+      </div>
+      <div class="form-group">
+        <label for="mod-desc">وصف المود</label>
+        <textarea id="mod-desc" name="mod-desc"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="mod-image">رابط صورة المود</label>
+        <input type="text" id="mod-image" name="mod-image">
+      </div>
+      <div class="form-group">
+        <label for="mod-link">رابط المود</label>
+        <input type="text" id="mod-link" name="mod-link">
+      </div>
+      <div class="form-group">
+        <label for="mod-category">الفئة</label>
+        <select id="mod-category" name="mod-category">
+          <option value="ألعاب">ألعاب</option>
+          <option value="تعديلات">تعديلات</option>
+          <option value="أدوات">أدوات</option>
+        </select>
+      </div>
+      <button class="btn" type="submit">نشر المود</button>
+    </form>
+    <input type="text" id="search-input" placeholder="بحث">
+    <button id="search-btn">بحث</button>
+    <div class="mod-list" id="mod-list">
+      <!-- المودات ستظهر هنا -->
+    </div>
+  </div>
 
-  <div id="mods-container"></div>
-
-  <!-- Firebase -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https:                                                    
+    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
       apiKey: "AIzaSyAtn8wwDmlWe95RA13kAQiY0XDkhnuKoQ0",
       authDomain: "infinity-craft-301e4.firebaseapp.com",
-      databaseURL: "https://infinity-craft-301e4-default-rtdb.europe-west1.firebasedatabase.app",
+      databaseURL: "https:                                                                       
       projectId: "infinity-craft-301e4",
       storageBucket: "infinity-craft-301e4.firebasestorage.app",
       messagingSenderId: "979672021905",
       appId: "1:979672021905:web:849ecc0ed6379edb2eb830",
       measurementId: "G-G188MXB3JY"
     };
-
+                          
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const modsContainer = document.getElementById("mods-container");
-    const modsRef = ref(db, "mods");
+    const modForm = document.getElementById('mod-form');
+    const modList = document.getElementById('mod-list');
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
 
+    modForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const modName = document.getElementById('mod-name').value;
+      const modDesc = document.getElementById('mod-desc').value;
+      const modImage = document.getElementById('mod-image').value;
+      const modLink = document.getElementById('mod-link').value;
+      const modCategory = document.getElementById('mod-category').value;
+
+      const newModRef = ref(db, 'mods/' + Date.now());
+      const newMod = {
+        name: modName,
+        description: modDesc,
+        image: modImage,
+        link: modLink,
+        category: modCategory
+      };
+      set(newModRef, newMod);
+    });
+
+    const modsRef = ref(db, 'mods');
     onValue(modsRef, (snapshot) => {
-      modsContainer.innerHTML = "";
-      snapshot.forEach((child) => {
-        const mod = child.val();
-        const modId = child.key;
-
-        const modBox = document.createElement("div");
-        modBox.classList.add("mod-box");
-        modBox.innerHTML = `
-          <h2>${mod.name}</h2>
-          <img src="${mod.image}" alt="${mod.name}">
-          <p>${mod.description}</p>
-          <a href="${mod.link}" target="_blank"><button>⬇️ تحميل المود</button></a>
-          <button class="delete-btn" data-id="${modId}">🗑️ حذف المود</button>
+      const mods = snapshot.val();
+      modList.innerHTML = '';
+      for (const mod in mods) {
+        const modItem = document.createElement('div');
+        modItem.classList.add('mod-item');
+        modItem.innerHTML = `
+          <h2>${mods[mod].name}</h2>
+          <p>${mods[mod].description}</p>
+          <img src="${mods[mod].image}" alt="${mods[mod].name}">
+          <a href="${mods[mod].link}">تحميل المود</a>
+          <button class="delete-btn" data-mod="${mod}">حذف</button>
         `;
-        modsContainer.appendChild(modBox);
-      });
+        modList.appendChild(modItem);
+      }
 
-      document.querySelectorAll(".delete-btn").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-          const modId = e.target.getAttribute("data-id");
-          const modRef = ref(db, `mods/${modId}`);
-          if (confirm("هل أنت متأكد إنك عايز تحذف المود؟")) {
-            remove(modRef)
-              .then(() => alert("تم حذف المود بنجاح ✅"))
-              .catch(() => alert("حدث خطأ أثناء الحذف ❌"));
-          }
+      const deleteBtns = document.querySelectorAll('.delete-btn');
+      deleteBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          const modRef = ref(db, 'mods/' + e.target.dataset.mod);
+          remove(modRef).then(() => {
+            console.log('تم حذف المود');
+          }).catch((error) => {
+            console.error('خطأ في حذف المود:', error);
+          });
         });
+      });
+    });
+
+    searchBtn.addEventListener('click', () => {
+      const searchQuery = searchInput.value;
+      const modsRef = ref(db, 'mods');
+      onValue(modsRef, (snapshot) => {
+        const mods = snapshot.val();
+        modList.innerHTML = '';
+        for (const mod in mods) {
+          if (mods[mod].name.includes(searchQuery)) {
+            const modItem = document.createElement('div');
+            modItem.classList.add('mod-item');
+            modItem.innerHTML = `
+              <h2>${mods[mod].name}</h2>
+              <p>${mods[mod].description}</p>
+              <img src="${mods[mod].image}" alt="${mods[mod].name}">
+              <a href="${mods[mod].link}">تحميل المود</a>
+              <button class="delete-btn" data-mod="${mod}">حذف</button>
+            `;
+            modList.appendChild(modItem);
+          }
+        }
       });
     });
   </script>
