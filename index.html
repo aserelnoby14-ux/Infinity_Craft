@@ -45,11 +45,12 @@
 
 <!-- Firebase SDK -->
 <script type="module">
+  // استيراد مكتبات Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
   import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-analytics.js";
 
-  // إعداد Firebase
+  // إعداد Firebase من البيانات اللي انت بعتهالي
   const firebaseConfig = {
     apiKey: "AIzaSyAtn8wwDmlWe95RA13kAQiY0XDkhnuKoQ0",
     authDomain: "infinity-craft-301e4.firebaseapp.com",
@@ -75,7 +76,7 @@
     uploadForm.style.display = uploadForm.style.display === 'none' ? 'block' : 'none';
   }
 
-  // رفع مود جديد
+  // رفع مود جديد 🔥
   window.uploadMod = function() {
     const name = document.getElementById('modName').value.trim();
     const desc = document.getElementById('modDesc').value.trim();
@@ -89,17 +90,19 @@
 
     const modsRef = ref(db, "mods");
     const newMod = push(modsRef);
-    set(newMod, { name, desc, img, link });
-
-    alert("✅ تم نشر المود بنجاح!");
-    document.getElementById('modName').value = '';
-    document.getElementById('modDesc').value = '';
-    document.getElementById('modImg').value = '';
-    document.getElementById('modLink').value = '';
-    uploadForm.style.display = 'none';
+    set(newMod, { name, desc, img, link })
+      .then(() => {
+        alert("✅ تم نشر المود بنجاح!");
+        document.getElementById('modName').value = '';
+        document.getElementById('modDesc').value = '';
+        document.getElementById('modImg').value = '';
+        document.getElementById('modLink').value = '';
+        uploadForm.style.display = 'none';
+      })
+      .catch(() => alert("❌ حدث خطأ أثناء النشر!"));
   }
 
-  // تحميل المودات من قاعدة البيانات
+  // تحميل المودات مع زرار حذف 🗑️
   function loadMods() {
     const modsRef = ref(db, "mods");
     onValue(modsRef, snapshot => {
@@ -110,7 +113,6 @@
         return;
       }
 
-      // ترتيب المودات بحيث الأحدث فوق
       const mods = Object.entries(data).reverse();
       mods.forEach(([id, mod]) => {
         const div = document.createElement('div');
@@ -125,7 +127,7 @@
         modsContainer.appendChild(div);
       });
 
-      // زرار الحذف
+      // ربط أزرار الحذف بقاعدة البيانات
       document.querySelectorAll('.deleteBtn').forEach(btn => {
         btn.addEventListener('click', e => {
           const modId = e.target.getAttribute('data-id');
@@ -139,7 +141,7 @@
     });
   }
 
-  // البحث عن مود
+  // البحث 🔎
   window.searchMods = function() {
     const term = searchBox.value.toLowerCase();
     const mods = document.querySelectorAll('.mod');
@@ -149,7 +151,6 @@
     });
   }
 
-  // تحميل المودات عند فتح الصفحة
   loadMods();
 </script>
 
