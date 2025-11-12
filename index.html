@@ -1,146 +1,284 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Infinity Craft - مودات ماينكرافت</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Infinity Craft - مودات</title>
 <style>
-  body { font-family: 'Cairo', sans-serif; background: #fff; color: #222; text-align: center; }
-  header { background: red; color: #fff; padding: 15px; font-size: 24px; font-weight: bold; }
-  .mod { border: 2px solid #ccc; border-radius: 15px; padding: 15px; margin: 10px auto; width: 90%; max-width: 500px; background: #f9f9f9; }
-  .mod img { width: 100%; border-radius: 10px; }
-  button { background: green; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; margin: 5px; }
-  .delete { background: crimson; }
-  .info { font-size: 14px; color: #666; }
+  :root{--red:#d62828;--green:#4caf50;--muted:#666}
+  body{font-family:"Cairo",sans-serif;background:#fff;margin:0;color:#222;direction:rtl}
+  header{background:var(--red);color:#fff;padding:14px 12px;text-align:center;font-weight:800}
+  .topbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px;max-width:980px;margin:0 auto}
+  .controls{display:flex;gap:8px;align-items:center}
+  .btn{background:var(--green);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700}
+  .btn.ghost{background:transparent;color:var(--red);border:2px solid var(--red)}
+  .search{padding:8px;border-radius:8px;border:1px solid #ddd;width:240px}
+  .container{max-width:980px;margin:14px auto;padding:12px}
+  .card{background:#f7fff7;border-radius:12px;padding:14px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
+  .mod{background:#fff;border:2px solid #e6ffe6;border-radius:12px;padding:12px;display:flex;flex-direction:column}
+  .thumb{height:160px;border-radius:8px;overflow:hidden;background:#eee;display:flex;align-items:center;justify-content:center}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .title{font-weight:800;margin:8px 0}
+  .desc{color:var(--muted);font-size:14px;min-height:40px}
+  .meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px}
+  .download{background:var(--red);color:#fff;padding:8px 12px;border-radius:8px;text-decoration:none}
+  .delete{background:#c62828;color:#fff;padding:6px 10px;border-radius:8px;border:none;cursor:pointer}
+  .form{margin-top:12px;background:#f2f2f2;padding:12px;border-radius:10px}
+  input,textarea,select{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ddd;box-sizing:border-box}
+  footer{margin-top:20px;padding:18px;text-align:center;color:#444}
+  .small{font-size:13px;color:var(--muted)}
+  .hidden{display:none}
+  @media(max-width:600px){.search{width:140px}}
 </style>
 </head>
 <body>
-
 <header>Infinity Craft - مودات ماينكرافت</header>
-<p>المطور: Asernoby23 | المالك: kraivx09</p>
 
-<h3>تسجيل الدخول</h3>
-<input type="email" id="email" placeholder="الايميل"><br>
-<input type="password" id="password" placeholder="كلمة السر"><br>
-<button onclick="login()">تسجيل الدخول</button>
-<button onclick="signup()">إنشاء حساب</button>
-<hr>
+<div class="topbar">
+  <div class="controls">
+    <div id="greeting" class="small">مرحبًا زائر</div>
+  </div>
 
-<h3>نشر مود جديد</h3>
-<input type="text" id="modName" placeholder="اسم المود"><br>
-<input type="text" id="modImage" placeholder="رابط الصورة"><br>
-<input type="text" id="modLink" placeholder="رابط التحميل"><br>
-<button onclick="addMod()">نشر المود</button>
+  <div class="controls">
+    <input id="searchInput" class="search" placeholder="🔍 ابحث باسم المود..." />
+    <button id="openPublishBtn" class="btn">📤 انشر مودك</button>
+    <button id="authBtn" class="btn ghost">تسجيل / دخول</button>
+  </div>
+</div>
 
-<h2>📦 المودات المنشورة</h2>
-<div id="mods"></div>
+<div class="container">
+
+  <!-- Publish form -->
+  <div id="publishCard" class="card hidden">
+    <h3 style="margin:0 0 8px 0;text-align:center">نشر مود جديد</h3>
+    <div class="form">
+      <input id="ownerLabel" placeholder="اسمك (سيظهر كمالك — اختياري)" />
+      <input id="name" placeholder="اسم المود *">
+      <textarea id="description" rows="3" placeholder="وصف المود *"></textarea>
+      <input id="imageUrl" placeholder="رابط الصورة المباشر *">
+      <input id="downloadUrl" placeholder="رابط التحميل *">
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="publishBtn" class="btn">نشر المود</button>
+        <button id="closePublishBtn" class="btn ghost">إغلاق</button>
+      </div>
+      <div id="publishMsg" class="small"></div>
+    </div>
+  </div>
+
+  <!-- Auth panel -->
+  <div id="authCard" class="card hidden" style="margin-top:12px">
+    <h3 style="margin:0 0 8px 0;text-align:center">تسجيل / دخول</h3>
+    <div class="form">
+      <input id="email" type="email" placeholder="البريد الإلكتروني">
+      <input id="password" type="password" placeholder="كلمة المرور">
+      <input id="displayName" placeholder="الاسم الذي سيظهر (للتسجيل فقط)">
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="signUpBtn" class="btn">إنشاء حساب</button>
+        <button id="signInBtn" class="btn ghost">تسجيل الدخول</button>
+        <button id="signOutBtn" class="btn hidden">تسجيل الخروج</button>
+      </div>
+      <div id="authMsg" class="small"></div>
+    </div>
+  </div>
+
+  <!-- Mods grid -->
+  <div id="modsGrid" class="grid"></div>
+  <div id="emptyMsg" class="small" style="text-align:center;margin-top:12px;display:none">لا يوجد مودات حتى الآن</div>
+
+  <footer>
+    <div>المطور: <strong>Asernoby23</strong> &nbsp; المالك: <strong>kraivx09</strong></div>
+    <div style="margin-top:8px"><a href="https://t.me/+qq_iB3QRLpJjMGFk" target="_blank">قناة التليجرام</a></div>
+  </footer>
+</div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAtn8wwDmlWe95RA13kAQiY0XDkhnuKoQ0",
-    authDomain: "infinity-craft-301e4.firebaseapp.com",
-    databaseURL: "https://infinity-craft-301e4-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "infinity-craft-301e4",
-    storageBucket: "infinity-craft-301e4.firebasestorage.app",
-    messagingSenderId: "979672021905",
-    appId: "1:979672021905:web:849ecc0ed6379edb2eb830",
-    measurementId: "G-G188MXB3JY"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyAtn8wwDmlWe95RA13kAQiY0XDkhnuKoQ0",
+  authDomain: "infinity-craft-301e4.firebaseapp.com",
+  databaseURL: "https://infinity-craft-301e4-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "infinity-craft-301e4",
+  storageBucket: "infinity-craft-301e4.firebasestorage.app",
+  messagingSenderId: "979672021905",
+  appId: "1:979672021905:web:849ecc0ed6379edb2eb830",
+  measurementId: "G-G188MXB3JY"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const auth = getAuth(app);
-  const modsRef = ref(db, "mods");
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
 
-  // تسجيل حساب جديد
-  window.signup = function() {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
-    createUserWithEmailAndPassword(auth, email, pass)
-      .then((userCredential) => {
-        alert("تم إنشاء الحساب بنجاح");
-        updateMods(userCredential.user); // تحديث عرض المودات بعد تسجيل الحساب
-      })
-      .catch(e => alert("خطأ: " + e.message));
-  }
+// UI refs
+const greeting = document.getElementById('greeting');
+const authBtn = document.getElementById('authBtn');
+const authCard = document.getElementById('authCard');
+const signUpBtn = document.getElementById('signUpBtn');
+const signInBtn = document.getElementById('signInBtn');
+const signOutBtn = document.getElementById('signOutBtn');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const displayNameInput = document.getElementById('displayName');
+const authMsg = document.getElementById('authMsg');
 
-  // تسجيل الدخول
-  window.login = function() {
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
-    signInWithEmailAndPassword(auth, email, pass)
-      .then((userCredential) => {
-        alert("تم تسجيل الدخول");
-        updateMods(userCredential.user); // تحديث عرض المودات بعد تسجيل الدخول
-      })
-      .catch(e => alert("خطأ: " + e.message));
-  }
+const openPublishBtn = document.getElementById('openPublishBtn');
+const publishCard = document.getElementById('publishCard');
+const closePublishBtn = document.getElementById('closePublishBtn');
+const publishBtn = document.getElementById('publishBtn');
+const publishMsg = document.getElementById('publishMsg');
+const ownerLabel = document.getElementById('ownerLabel');
+const nameInput = document.getElementById('name');
+const descInput = document.getElementById('description');
+const imageInput = document.getElementById('imageUrl');
+const downloadInput = document.getElementById('downloadUrl');
 
-  // نشر مود
-  window.addMod = function() {
-    const user = auth.currentUser;
-    if (!user) { alert("سجل الدخول أولاً!"); return; }
+const modsGrid = document.getElementById('modsGrid');
+const searchInput = document.getElementById('searchInput');
+const emptyMsg = document.getElementById('emptyMsg');
 
-    const name = document.getElementById("modName").value;
-    const image = document.getElementById("modImage").value;
-    const link = document.getElementById("modLink").value;
+// auth UI
+authBtn.addEventListener('click', ()=> authCard.classList.toggle('hidden'));
 
-    push(ref(db, "mods"), {
-      name: name,
-      image: image,
-      link: link,
-      owner: user.uid
+signUpBtn.addEventListener('click', async ()=>{
+  authMsg.textContent='';
+  const email = emailInput.value.trim();
+  const pass = passwordInput.value;
+  const name = displayNameInput.value.trim() || email.split('@')[0];
+  if(!email || !pass){ authMsg.textContent='اكتب البريد وكلمة المرور'; return; }
+  try{
+    const cred = await createUserWithEmailAndPassword(auth,email,pass);
+    await updateProfile(cred.user,{displayName:name});
+    authMsg.style.color='green'; authMsg.textContent='تم إنشاء الحساب وتسجيل الدخول';
+  }catch(e){ authMsg.style.color='red'; authMsg.textContent=e.message; }
+});
+
+signInBtn.addEventListener('click', async ()=>{
+  authMsg.textContent='';
+  const email = emailInput.value.trim();
+  const pass = passwordInput.value;
+  if(!email||!pass){ authMsg.textContent='اكتب البريد وكلمة المرور'; return; }
+  try{
+    await signInWithEmailAndPassword(auth,email,pass);
+    authMsg.style.color='green'; authMsg.textContent='تم تسجيل الدخول';
+  }catch(e){ authMsg.style.color='red'; authMsg.textContent=e.message; }
+});
+
+signOutBtn.addEventListener('click', async ()=> await signOut(auth));
+
+openPublishBtn.addEventListener('click', ()=>{
+  if(!auth.currentUser){ alert('لازم تسجل دخول عشان تنشر'); return; }
+  publishCard.classList.toggle('hidden');
+  publishMsg.textContent='';
+  ownerLabel.value = auth.currentUser.displayName || auth.currentUser.email.split('@')[0];
+});
+closePublishBtn.addEventListener('click', ()=> publishCard.classList.add('hidden'));
+
+publishBtn.addEventListener('click', async ()=>{
+  publishMsg.textContent='';
+  const user = auth.currentUser;
+  if(!user){ publishMsg.style.color='red'; publishMsg.textContent='لازم تسجيل دخول'; return; }
+  const ownerName = ownerLabel.value.trim() || user.displayName || user.email.split('@')[0];
+  const name = nameInput.value.trim();
+  const desc = descInput.value.trim();
+  const imageUrl = imageInput.value.trim();
+  const downloadUrl = downloadInput.value.trim();
+  if(!name||!desc||!downloadUrl){ publishMsg.style.color='red'; publishMsg.textContent='املأ الحقول المطلوبة'; return; }
+  publishMsg.style.color='black'; publishMsg.textContent='جاري النشر...';
+  try{
+    const newRef = push(ref(db,'mods'));
+    await set(newRef,{
+      name,
+      description:desc,
+      imageUrl,
+      downloadLink:downloadUrl,
+      ownerUid:user.uid,
+      ownerName,
+      createdAt:Date.now()
     });
+    publishMsg.style.color='green'; publishMsg.textContent='تم النشر ✅';
+    nameInput.value=''; descInput.value=''; imageInput.value=''; downloadInput.value='';
+    publishCard.classList.add('hidden');
+  }catch(e){ publishMsg.style.color='red'; publishMsg.textContent='خطأ في النشر'; console.error(e);}
+});
 
-    alert("✅ تم نشر المود!");
-  }
+// escape
+function escapeHtml(s){ if(!s) return ''; return s.toString().replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-  // حذف المود
-  window.deleteMod = function(id) {
-    const user = auth.currentUser;
-    if (!user) { alert("سجل الدخول أولاً!"); return; }
-
-    const modRef = ref(db, "mods/" + id);
-    remove(modRef)
-      .then(() => alert("🗑 تم حذف المود بنجاح"))
-      .catch(e => alert("❌ فشل الحذف: " + e.message));
-  }
-
-  // تحديث عرض المودات بحسب المستخدم الحالي
-  function updateMods(user) {
-    onValue(modsRef, (snapshot) => {
-      const data = snapshot.val();
-      const container = document.getElementById("mods");
-      container.innerHTML = "";
-      for (let id in data) {
-        const mod = data[id];
-        const div = document.createElement("div");
-        div.className = "mod";
-        div.innerHTML = `
-          <h3>${mod.name}</h3>
-          <img src="${mod.image}" alt="صورة المود">
-          <p><a href="${mod.link}" target="_blank">تحميل المود</a></p>
-          ${user && user.uid === mod.owner ? `<button class="delete" onclick="deleteMod('${id}')">🗑 حذف المود</button>` : ""}
-        `;
-        container.appendChild(div);
-      }
-    });
-  }
-
-  // متابعة المستخدم الحالي
-  onAuthStateChanged(auth, (user) => {
-    updateMods(user); // دايمًا يحدث عرض المودات على حسب المستخدم
-    if (user) {
-      console.log("مسجل دخول:", user.email);
-    } else {
-      console.log("لم يتم تسجيل الدخول");
+// render mods
+function renderMods(list){
+  modsGrid.innerHTML='';
+  if(!list||list.length===0){ emptyMsg.style.display='block'; return; } else emptyMsg.style.display='none';
+  const viewerUid = auth.currentUser?auth.currentUser.uid:null;
+  const term=(searchInput.value||'').trim().toLowerCase();
+  list.forEach(item=>{
+    if(term){
+      const ok=(item.name||'').toLowerCase().includes(term)||(item.description||'').toLowerCase().includes(term)||(item.ownerName||'').toLowerCase().includes(term);
+      if(!ok) return;
     }
+    const col=document.createElement('div'); col.className='mod';
+    col.innerHTML=`
+      <div class="thumb">${ item.imageUrl ? `<img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.name)}" onerror="this.style.display='none'">` : '<div class="small">لا توجد صورة</div>' }</div>
+      <div class="title">${escapeHtml(item.name)}</div>
+      <div class="desc">${escapeHtml(item.description)}</div>
+      <div class="meta">
+        <a class="download" href="${escapeHtml(item.downloadLink)}" target="_blank">⬇️ تحميل</a>
+        <div class="small">بواسطة: ${escapeHtml(item.ownerName||'مجهول')}</div>
+      </div>
+    `;
+    if(viewerUid && item.ownerUid && viewerUid===item.ownerUid){
+      const del=document.createElement('button');
+      del.className='delete'; del.textContent='🗑️ حذف'; del.style.marginTop='8px';
+      del.onclick=async()=>{
+        if(!confirm('متأكد تحذف المود؟')) return;
+        try{ await remove(ref(db,'mods/'+item._id)); alert('تم الحذف ✅'); }
+        catch(e){ alert('خطأ أثناء الحذف'); console.error(e);}
+      };
+      col.appendChild(del);
+    }
+    modsGrid.appendChild(col);
   });
-</script>
+}
 
+// realtime listener
+onValue(ref(db,'mods'), snapshot=>{
+  const val=snapshot.val();
+  const arr=[];
+  if(val) Object.entries(val).forEach(([k,v])=>arr.push(Object.assign({_id:k},v)));
+  arr.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  renderMods(arr);
+});
+
+// search
+searchInput.addEventListener('input',()=> onValue(ref(db,'mods'), snapshot=>{
+  const val=snapshot.val();
+  const arr=[];
+  if(val) Object.entries(val).forEach(([k,v])=>arr.push(Object.assign({_id:k},v)));
+  arr.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  renderMods(arr);
+},{onlyOnce:true}));
+
+// auth state
+onAuthStateChanged(auth,user=>{
+  if(user){
+    greeting.textContent=`مرحبًا يا ${user.displayName||user.email.split('@')[0]}`;
+    authBtn.classList.add('hidden');
+    signOutBtn.classList.remove('hidden');
+  }else{
+    greeting.textContent='مرحبًا زائر';
+    authBtn.classList.remove('hidden');
+    signOutBtn.classList.add('hidden');
+  }
+  // فورًا حدث عرض المودات بعد معرفة المستخدم
+  onValue(ref(db,'mods'),snapshot=>{
+    const val=snapshot.val(); const arr=[];
+    if(val) Object.entries(val).forEach(([k,v])=>arr.push(Object.assign({_id:k},v)));
+    arr.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    renderMods(arr);
+  },{onlyOnce:true});
+});
+</script>
 </body>
 </html>
