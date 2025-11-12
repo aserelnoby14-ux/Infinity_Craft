@@ -54,13 +54,17 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const auth = getAuth(app);
+  const modsRef = ref(db, "mods");
 
   // تسجيل حساب جديد
   window.signup = function() {
     const email = document.getElementById("email").value;
     const pass = document.getElementById("password").value;
     createUserWithEmailAndPassword(auth, email, pass)
-      .then(() => alert("تم إنشاء الحساب بنجاح"))
+      .then((userCredential) => {
+        alert("تم إنشاء الحساب بنجاح");
+        updateMods(userCredential.user); // تحديث عرض المودات بعد تسجيل الحساب
+      })
       .catch(e => alert("خطأ: " + e.message));
   }
 
@@ -69,7 +73,10 @@
     const email = document.getElementById("email").value;
     const pass = document.getElementById("password").value;
     signInWithEmailAndPassword(auth, email, pass)
-      .then(() => alert("تم تسجيل الدخول"))
+      .then((userCredential) => {
+        alert("تم تسجيل الدخول");
+        updateMods(userCredential.user); // تحديث عرض المودات بعد تسجيل الدخول
+      })
       .catch(e => alert("خطأ: " + e.message));
   }
 
@@ -92,28 +99,6 @@
     alert("✅ تم نشر المود!");
   }
 
-  // عرض المودات
-  const modsRef = ref(db, "mods");
-  onValue(modsRef, (snapshot) => {
-    const data = snapshot.val();
-    const container = document.getElementById("mods");
-    container.innerHTML = "";
-    const user = auth.currentUser;
-
-    for (let id in data) {
-      const mod = data[id];
-      const div = document.createElement("div");
-      div.className = "mod";
-      div.innerHTML = `
-        <h3>${mod.name}</h3>
-        <img src="${mod.image}" alt="صورة المود">
-        <p><a href="${mod.link}" target="_blank">تحميل المود</a></p>
-        ${user && user.uid === mod.owner ? `<button class="delete" onclick="deleteMod('${id}')">🗑 حذف المود</button>` : ""}
-      `;
-      container.appendChild(div);
-    }
-  });
-
   // حذف المود
   window.deleteMod = function(id) {
     const user = auth.currentUser;
@@ -125,8 +110,30 @@
       .catch(e => alert("❌ فشل الحذف: " + e.message));
   }
 
+  // تحديث عرض المودات بحسب المستخدم الحالي
+  function updateMods(user) {
+    onValue(modsRef, (snapshot) => {
+      const data = snapshot.val();
+      const container = document.getElementById("mods");
+      container.innerHTML = "";
+      for (let id in data) {
+        const mod = data[id];
+        const div = document.createElement("div");
+        div.className = "mod";
+        div.innerHTML = `
+          <h3>${mod.name}</h3>
+          <img src="${mod.image}" alt="صورة المود">
+          <p><a href="${mod.link}" target="_blank">تحميل المود</a></p>
+          ${user && user.uid === mod.owner ? `<button class="delete" onclick="deleteMod('${id}')">🗑 حذف المود</button>` : ""}
+        `;
+        container.appendChild(div);
+      }
+    });
+  }
+
   // متابعة المستخدم الحالي
   onAuthStateChanged(auth, (user) => {
+    updateMods(user); // دايمًا يحدث عرض المودات على حسب المستخدم
     if (user) {
       console.log("مسجل دخول:", user.email);
     } else {
