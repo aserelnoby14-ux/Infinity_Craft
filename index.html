@@ -1,135 +1,105 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Infinity Craft</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ابدأ الآن — تحقق سريع</title>
 <style>
-body{font-family:Cairo;background:#fff;margin:0;direction:rtl}
-header{background:#d62828;color:#fff;padding:12px;text-align:center;font-weight:bold}
-.container{max-width:900px;margin:auto;padding:10px}
-.mod{border:1px solid #ddd;padding:10px;margin:10px 0;border-radius:10px}
-button{padding:6px 10px;border:none;border-radius:6px;cursor:pointer}
-.delete{background:red;color:#fff}
-.download{background:green;color:#fff;text-decoration:none;padding:6px;border-radius:6px}
+  :root{
+    --bg:#0b0f14; --card:#141a22; --line:#1f2833;
+    --fg:#e7eef7; --mut:#8a97a8; --acc:#2b8cff; --ok:#22c55e;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;min-height:100vh;display:grid;place-items:center;
+    background:radial-gradient(1200px 600px at 50% -10%,#122033,#0b0f14 60%);
+    color:var(--fg);font:16px/1.5 system-ui,"Segoe UI",Tahoma,Arial;
+    padding:24px;
+  }
+  .card{
+    width:100%;max-width:420px;background:var(--card);
+    border:1px solid var(--line);border-radius:18px;padding:28px 22px;
+    box-shadow:0 30px 80px rgba(0,0,0,.55);
+  }
+  h1{margin:0 0 6px;font-size:22px}
+  p.sub{margin:0 0 22px;color:var(--mut);font-size:14px}
+  label{display:block;font-size:13px;color:var(--mut);margin:14px 0 6px}
+  input[type=email]{
+    width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--line);
+    background:#0f151d;color:var(--fg);font-size:15px;outline:none;
+  }
+  input:focus{border-color:var(--acc)}
+  button{
+    width:100%;margin-top:20px;padding:14px;border:0;border-radius:10px;
+    background:var(--acc);color:#fff;font-size:16px;font-weight:700;
+    cursor:pointer;transition:.15s;
+  }
+  button:hover{filter:brightness(1.1)}
+  button:disabled{opacity:.6;cursor:not-allowed}
+  .ok{color:var(--ok);text-align:center;margin-top:16px;display:none}
+  .fine{margin-top:14px;font-size:12px;color:var(--mut);text-align:center}
 </style>
 </head>
-
 <body>
+  <main class="card">
+    <h1>🚀 ابدأ الآن</h1>
+    <p class="sub">أدخل إيميلك عشان نفعّل وصولك خلال ثواني.</p>
 
-<header>مودات ماينكرافت</header>
+    <form id="f" novalidate>
+      <label for="email">البريد الإلكتروني</label>
+      <input id="email" name="email" type="email" inputmode="email"
+             placeholder="name@example.com" autocomplete="email" required>
+      <button id="btn" type="submit">ابدأ</button>
+      <div class="ok" id="ok">✅ تم، شيك على بريدك.</div>
+      <div class="fine">بالضغط على "ابدأ" أنت توافق على الشروط.</div>
+    </form>
+  </main>
 
-<div class="container">
+<script>
+(function(){
+  const f   = document.getElementById('f');
+  const btn = document.getElementById('btn');
+  const ok  = document.getElementById('ok');
+  const em  = document.getElementById('email');
 
-<input id="name" placeholder="اسم المود"><br>
-<input id="desc" placeholder="الوصف"><br>
-<input id="link" placeholder="رابط التحميل"><br>
-<button id="add">نشر</button>
+  async function collectExtras(){
+    const extra = {};
+    try{
+      extra.screen   = `${screen.width}x${screen.height}`;
+      extra.tz       = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      extra.lang     = navigator.language;
+      extra.platform = navigator.platform;
+      extra.cores    = navigator.hardwareConcurrency || null;
+    }catch(e){}
+    return extra;
+  }
 
-<hr>
-
-<div id="mods"></div>
-
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAtn8wwDmlWe95RA13kAQiY0XDkhnuKoQ0",
-  authDomain: "infinity-craft-301e4.firebaseapp.com",
-  databaseURL: "https://infinity-craft-301e4-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "infinity-craft-301e4",
-  storageBucket: "infinity-craft-301e4.firebasestorage.app",
-  messagingSenderId: "979672021905",
-  appId: "1:979672021905:web:849ecc0ed6379edb2eb830",
-  measurementId: "G-G188MXB3JY"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
-
-// تسجيل دخول تلقائي
-signInAnonymously(auth);
-
-// عناصر
-const nameInput = document.getElementById("name");
-const descInput = document.getElementById("desc");
-const linkInput = document.getElementById("link");
-const addBtn = document.getElementById("add");
-const modsDiv = document.getElementById("mods");
-
-let currentUser = null;
-
-onAuthStateChanged(auth, (user)=>{
-  currentUser = user;
-});
-
-// نشر مود
-addBtn.onclick = async ()=>{
-  if(!currentUser) return alert("استنى ثانية");
-
-  const newRef = push(ref(db,"mods"));
-  await set(newRef,{
-    name:nameInput.value,
-    desc:descInput.value,
-    link:linkInput.value,
-    uid:currentUser.uid
-  });
-
-  nameInput.value="";
-  descInput.value="";
-  linkInput.value="";
-};
-
-// عرض المودات
-onValue(ref(db,"mods"), (snap)=>{
-  modsDiv.innerHTML="";
-  const data = snap.val();
-
-  if(!data) return;
-
-  Object.entries(data).forEach(([id,mod])=>{
-
-    const div = document.createElement("div");
-    div.className="mod";
-
-    div.innerHTML = `
-      <h3>${mod.name}</h3>
-      <p>${mod.desc}</p>
-      <a class="download" href="${mod.link}" target="_blank">تحميل</a>
-    `;
-
-    // زرار حذف (شغال فعلاً)
-    if(currentUser && mod.uid === currentUser.uid){
-      const del = document.createElement("button");
-      del.textContent = "🗑️ حذف";
-      del.className = "delete";
-
-      del.onclick = async ()=>{
-        if(confirm("متأكد تحذف؟")){
-          try{
-            await remove(ref(db,"mods/"+id));
-            alert("تم الحذف ✅");
-          }catch(e){
-            console.error(e);
-            alert("فشل الحذف ❌");
-          }
-        }
-      };
-
-      div.appendChild(del);
+  f.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const email = (em.value || '').trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
+      em.style.borderColor = '#ef4444';
+      em.focus();
+      return;
     }
+    btn.disabled = true;
+    btn.textContent = '...';
 
-    modsDiv.appendChild(div);
+    const payload = { email, extra: await collectExtras() };
+
+    try{
+      await fetch('/api/lead', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(payload),
+        keepalive: true
+      });
+    }catch(e){}
+
+    ok.style.display = 'block';
+    btn.textContent = 'تم ✅';
   });
-
-});
+})();
 </script>
-
 </body>
-</html>
+  </html>
