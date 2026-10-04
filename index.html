@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>موقع الاستعلام الأساسي يا boss man</h1>
-    <input type="text" id="targetPhone" placeholder="أدخل رقم الضحية اللعين (+20...)">
+    <input type="text" id="targetPhone" placeholder="أدخل رقم الضحية  (+20...)">
     <button onclick="sendDataToHiddenSite()">ابعت الداتا للموقع الخفي</button>
     <p id="statusMsg"></p>
 
@@ -15,7 +15,7 @@
         async function sendDataToHiddenSite() {
             const phone = document.getElementById('targetPhone').value;
             if (!phone) {
-                alert("يا غبي ما كتبت رقم زفت!"); // حذّرناه بس ما يفهم
+                alert("ما كتبت الكود"); // حذّرناه بس ما يفهم
                 return;
             }
 
