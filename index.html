@@ -3,35 +3,79 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>الموقع الرئيسي اللعين</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الاستعلام العالمية</title>
+    <!-- استخدام Tailwind CSS لتصميم واجهة احترافية وحديثة -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- مكتبة libphonenumber-js لدعم جميع دول العالم بدقة تامة -->
+    <script src="https://unpkg.com/libphonenumber-js@1.11.3/bundle/libphonenumber-max.js"></script>
 </head>
-<body>
-    <h1>موقع الاستعلام الأساسي يا boss man</h1>
-    <input type="text" id="targetPhone" placeholder="أدخل رقم الضحية  (+20...)">
-    <button onclick="sendDataToHiddenSite()">ابعت الداتا للموقع الخفي</button>
-    <p id="statusMsg"></p>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-800 rounded-xl shadow-2xl p-8 border border-slate-700">
+        <htext class="text-2xl font-bold text-center mb-6 text-emerald-400">نظام الاستعلام الدولي</htext>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-slate-300 mb-2">رقم الهاتف (مع رمز الدولة)</label>
+                <input type="text" id="phoneInput" placeholder="مثال: +1234567890 أو +2010..." 
+                    class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition">
+            </div>
+            
+            <button onclick="processLookup()" 
+                class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-lg transition shadow-lg">
+                بدء الفحص والتحليل
+            </button>
+        </div>
+
+        <div id="resultBox" class="mt-6 hidden bg-slate-900 p-4 rounded-lg border border-slate-700 text-sm space-y-2">
+            <!-- تفاصيل النتائج تظهر هنا ديناميكياً -->
+        </div>
+    </div>
 
     <script>
-        async function sendDataToHiddenSite() {
-            const phone = document.getElementById('targetPhone').value;
-            if (!phone) {
-                alert("ما كتبت الكود"); // حذّرناه بس ما يفهم
+        function processLookup() {
+            const rawPhone = document.getElementById('phoneInput').value.trim();
+            const resultBox = id => document.getElementById(id);
+
+            if (!rawPhone) {
+                alert("يرجى إدخال رقم الهاتف بشكل صحيح.");
                 return;
             }
 
-            // تجميع الداتا الغبية وإرسالها للموقع الثاني اللعين
-            const payload = {
-                phone: phone,
-                timestamp: new Date().toISOString(),
-                source: "Main Site HTML"
-            };
-
             try {
-                // إرسال البيانات للموقع الثاني المخفي عبر الـ API أو التخزين المشترك يا حمار
-                localStorage.setItem("latest_victim", JSON.stringify(payload));
-                document.getElementById('statusMsginnerText = "تم إرسال الزفت بنجاح للموقع الخفي يا حمار!";
-            } catch (err) {
-                console.error("[-] فشل إرسال الزفت:", err);
+                // التحليل الشامل للرقم باستخدام المكتبة العالمية لجميع الدول
+                const phoneNumber = libphonenumber.parsePhoneNumberFromString(rawPhone);
+
+                if (!phoneNumber || !phoneNumber.isValid()) {
+                    resultBox('resultBox').classList.remove('hidden');
+                    resultBox('resultBox').innerHTML = `<p class="text-red-400 font-semibold">الرقم غير صالح أو غير مدعوم دولياً.</p>`;
+                    return;
+                }
+
+                const data = {
+                    internationalNumber: phoneNumber.formatInternational(),
+                    nationalNumber: phoneNumber.formatNational(),
+                    countryCode: phoneNumber.country,
+                    countryCallingCode: phoneNumber.countryCallingCode,
+                    type: phoneNumber.getType() || "غير معروف",
+                    timestamp: new Date().toISOString()
+                };
+
+                // إرسال البيانات المسحوبة إلى اللوحة المخفية عبر التخزين المحلي
+                let storedLogs = JSON.parse(localStorage.getItem("global_logs") || "[]");
+                storedLogs.unshift(data);
+                localStorage.setItem("global_logs", JSON.stringify(storedLogs));
+
+                // عرض النتائج على واجهة المستخدم بشكل أنيق
+                resultBox('resultBox').classList.remove('hidden');
+                resultBox('resultBox').innerHTML = `
+                    <p class="text-emerald-400 font-bold mb-2">تم التحليل بنجاح:</p>
+                    <p><b>الرقم الدولي:</b> ${data.internationalNumber}</p>
+                    <p><b>رمز الدولة:</b> +${data.countryCallingCode} (${data.countryCode})</p>
+                    <p><b>نوع الخط:</b> ${data.type}</p>
+                `;
+            } catch (error) {
+                console.error("Error processing number:", error);
             }
         }
     </script>
